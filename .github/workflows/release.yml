@@ -18,7 +18,24 @@ jobs:
           fetch-depth: 0
       - name: Lint
         uses: ansible-community/ansible-lint-action@main
+  secure:
+    name: Security
+    runs-on: ubuntu-latest
+    steps:
+      - name: Make results-dir
+        run: mkdir -p results-dir
+      - name: run kics Scan
+        uses: checkmarx/kics-action@latest
+        with:
+          path: '.'
+          output_path: results-dir
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: results-dir/results.sarif
   release:
+    needs:
+      - lint
     name: Release
     runs-on: ubuntu-latest
     steps:

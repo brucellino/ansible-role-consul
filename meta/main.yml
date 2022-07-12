@@ -4,12 +4,8 @@ galaxy_info:
   description: Ansible role template
   company: HaH
   license: MIT
-  min_ansible_version: 2.9
+  min_ansible_version: "'2.9"
   platforms:
-    - name: Fedora
-      versions:
-        - all
-        - 7.2
     - name: Ubuntu
       versions:
         - focal
@@ -17,4 +13,6 @@ galaxy_info:
 
   galaxy_tags:
     - template
+    - hashicorp
+    - consul
 dependencies: []
