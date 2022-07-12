@@ -12,6 +12,12 @@ repos:
     rev: v6.3.0
     hooks:
     - id: ansible-lint
+      always_run: false
+      exclude_types:
+        - markdown
+        - javascript
+        - json
+      files: "defaults|handlers|tasks|vars"
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.2.0
     hooks:

@@ -1,12 +1,24 @@
-# Ansible role XYZ
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/brucellino/ansible-role-consul/main.svg)](https://results.pre-commit.ci/latest/github/brucellino/ansible-role-consul/main)
+
+# Ansible role Consul
 
 <!-- A brief description of the role goes here. -->
+An Ansible role to deploy [Hashicorp Consul](https://consul.io) on supported platforms, following the [Datacenter deploy guide](https://learn.hashicorp.com/tutorials/consul/deployment-guide?in=consul/production-deploy)
+
+<!--
+Features:
+1. Consul itself, agent and server mode
+2. Consul Template
+3. Consul TLS and gossip secrets  read from Vault
+
+-->
 
 ## Requirements
 
 <!-- Any pre-requisites that may not be covered by Ansible itself or the role should
 be mentioned here. For instance, if the role uses the EC2 module, it may be a
 good idea to mention in this section that the boto package is required. -->
+This role requires a working Vault instance with TLS secrets and gossip keys in a given path.
 
 ## Role Variables
 
@@ -23,7 +35,6 @@ regards to parameters that may need to be set for other roles, or variables that
 are used from other roles. -->
 
 ## Example Playbook
-
 
 ## License
 
