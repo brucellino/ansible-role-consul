@@ -19,13 +19,15 @@ jobs:
       - name: Lint
         uses: ansible-community/ansible-lint-action@main
   secure:
+    needs:
+    - lint
     name: Security
     runs-on: ubuntu-latest
     steps:
       - name: Make results-dir
         run: mkdir -p results-dir
       - name: run kics Scan
-        uses: checkmarx/kics-action@latest
+        uses: checkmarx/kics-action@v1.5
         with:
           path: '.'
           output_path: results-dir
@@ -35,7 +37,7 @@ jobs:
           sarif_file: results-dir/results.sarif
   release:
     needs:
-      - lint
+      - secure
     name: Release
     runs-on: ubuntu-latest
     steps:
