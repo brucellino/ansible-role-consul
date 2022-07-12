@@ -1,4 +1,4 @@
-[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/brucellino/ansible-role-consul/main.svg)](https://results.pre-commit.ci/latest/github/brucellino/ansible-role-consul/main)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/brucellino/ansible-role-consul/main.svg)](https://results.pre-commit.ci/latest/github/brucellino/ansible-role-consul/main) [![main](https://github.com/brucellino/ansible-role-consul/actions/workflows/main.yml/badge.svg)](https://github.com/brucellino/ansible-role-consul/actions/workflows/main.yml) [![semantic-release: angular](https://img.shields.io/badge/semantic--release-conventional-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
 # Ansible role Consul
 
