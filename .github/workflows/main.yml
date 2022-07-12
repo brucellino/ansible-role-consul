@@ -54,7 +54,7 @@ jobs:
         run: |
           env ; pwd
       - name: Get Python
-        run: sudo apt-get install -y python3 python3-pip
+        run: sudo apt-get install -y python3 python3-pip unzip
       - name: Add Ansible
         run: sudo -H pip3 install ansible
       - name: Get Packer
