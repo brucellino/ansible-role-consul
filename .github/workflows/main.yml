@@ -44,6 +44,8 @@ jobs:
     needs:
       - secure
     name: Build Images
+    env:
+      ANSIBLE_ROLES_PATH: ${GITHUB_WORKSPACE}/../
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -60,9 +62,9 @@ jobs:
           chmod u+x packer && \
           ./packer -version
       - name: Init Packer
-        run: ./packer init .
+        run: ./packer init $GITHUB_WORKSPACE/.github/build
       - name: Build Image
-        run: ./packer build .github/build/consul.pkr.hcl
+        run: ./packer build ${GITHUB_WORKSPACE}/.github/build/consul.pkr.hcl
 
   release:
     needs:
