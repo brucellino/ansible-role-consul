@@ -66,6 +66,7 @@ jobs:
   release:
     needs:
       - secure
+      - build
     name: Release
     runs-on: ubuntu-latest
     steps:
