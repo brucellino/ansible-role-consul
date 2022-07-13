@@ -57,9 +57,10 @@ jobs:
       - name: Get Packer
         run: |
           curl -fL https://releases.hashicorp.com/packer/1.8.2/packer_1.8.2_linux_amd64.zip | gunzip ->packer && \
+          chmod u+x packer && \
           ./packer -version
       - name: Init Packer
-        run: pwd ; ./packer init .
+        run: ./packer init .
       - name: Build Image
         run: ./packer build .github/build/consul.pkr.hcl
 
