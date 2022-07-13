@@ -47,6 +47,10 @@ jobs:
     env:
       ANSIBLE_ROLES_PATH: ${GITHUB_WORKSPACE}/../
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${GITHUB_WORKSPACE}/.github/build/
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -62,9 +66,9 @@ jobs:
           chmod u+x packer && \
           ./packer -version
       - name: Init Packer
-        run: ./packer init $GITHUB_WORKSPACE/.github/build
+        run: ./packer init .
       - name: Build Image
-        run: ./packer build ${GITHUB_WORKSPACE}/.github/build/consul.pkr.hcl
+        run: ./packer build consul.pkr.hcl
 
   release:
     needs:
