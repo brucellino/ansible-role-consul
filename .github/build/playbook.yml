@@ -7,7 +7,7 @@
       ansible.builtin.raw: |
         apt-get update && \
         DEBIAN_FRONTEND=noninteractive \
-        apt-get install -y python3 software-properties-common
+        apt-get install -y python3 software-properties-common sudo
       changed_when: false
 
 - name: Consul
