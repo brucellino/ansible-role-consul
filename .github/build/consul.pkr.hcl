@@ -13,30 +13,56 @@ packer {
 }
 
 variable "roles_path" {
-  type    = string
+  type = string
 }
 
-source "docker" "ubuntu" {
+variable "docker_password" {
+  type      = string
+  sensitive = true
+  default   = env("GITHUB_TOKEN")
+}
+
+source "docker" "ubuntu-arm64" {
   image     = "arm64v8/ubuntu:focal"
   commit    = true
   exec_user = "root"
   changes = [
     "USER root",
-    "LABEL VERSION=latest"
+    "LABEL VERSION=latest",
+    "LABEL org.opencontainers.image.source https://github.com/brucellino/ansible-role-consul"
   ]
   run_command = [
     "-d", "-i", "-t", "--entrypoint=/bin/bash",
-    "--name=ubuntu-consul",
+    "--name=ubuntu-consul-arm64",
+    "--", "{{ .Image }}"
+  ]
+}
+
+source "docker" "ubuntu-amd64" {
+  image     = "ubuntu:focal"
+  commit    = true
+  exec_user = "root"
+  changes = [
+    "USER root",
+    "LABEL VERSION=latest",
+    "LABEL org.opencontainers.image.source https://github.com/brucellino/ansible-role-consul"
+  ]
+  run_command = [
+    "-d", "-i", "-t", "--entrypoint=/bin/bash",
+    "--name=ubuntu-consul-amd64",
     "--", "{{ .Image }}"
   ]
 }
 
 build {
-  name    = "docker-ubuntu"
-  sources = ["source.docker.ubuntu"]
+  name = "docker-ubuntu"
+  sources = [
+    "source.docker.ubuntu-arm64",
+    "source.docker.ubuntu-amd64"
+  ]
 
   provisioner "ansible" {
-    playbook_file = "consul.yml"
+    playbook_file = "playbook.yml"
     groups        = ["pis"]
     ansible_env_vars = [
       "ANSIBLE_HOST_KEY_CHECKING=False",
@@ -44,5 +70,23 @@ build {
       "ANSIBLE_NOCOLOR=True",
       "ANSIBLE_ROLES_PATH=${var.roles_path}"
     ]
+  }
+  post-processors {
+    post-processor "docker-tag" {
+      repository = "ghcr.io/brucellino/ansible-role-consul/consul-ubuntu-amd64"
+      tags       = ["latest"]
+      only       = ["docker.ubuntu-amd64"]
+    }
+    post-processor "docker-tag" {
+      repository = "ghcr.io/brucellino/ansible-role-conusul/consul-ubuntu-arm64"
+      tags       = ["latest"]
+      only       = ["docker.ubuntu-arm64"]
+    }
+    post-processor "docker-push" {
+      login          = true
+      login_server   = "https://ghcr.io"
+      login_username = "brucellino"
+      login_password = var.docker_password
+    }
   }
 }

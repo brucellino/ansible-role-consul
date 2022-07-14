@@ -43,10 +43,16 @@ jobs:
       - secure
       - lint
     name: Build Images
+    permissions: write-all
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ".github/build/"
+    strategy:
+      matrix:
+        target:
+          - "docker-ubuntu.docker.ubuntu-amd64"
+          - "docker-ubuntu.docker.ubuntu-arm64"
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -55,12 +61,13 @@ jobs:
       - name: Get Prerequisites
         run: |
           sudo apt-get install -y \
+          binfmt-support \
+          gzip \
           python3 \
           python3-pip \
-          gzip \
           qemu \
-          binfmt-support \
           qemu-user-static
+          unzip \
       - name: Add Ansible
         run: sudo -H pip3 install ansible
       - name: Get Packer
@@ -70,15 +77,13 @@ jobs:
           ./packer -version
       - name: Init Packer
         run: ./packer init .
-      - name: Check docker
-        run: docker run --rm -t hello-world
       - name: Build Image
         shell: 'script -q -e -c "bash {0}"'
-        env:
-          PACKER_LOG: 1
         run: |
           ./packer build \
             -var roles_path="${GITHUB_WORKSPACE}/../" \
+            -var docker_password=${{ secrets.GITHUB_TOKEN }} \
+            -only=${{ matrix.target }} \
             consul.pkr.hcl
   test:
     needs:
