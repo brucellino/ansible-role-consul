@@ -46,7 +46,6 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        shell: bash
         working-directory: ".github/build/"
     steps:
       - name: Checkout
@@ -65,13 +64,20 @@ jobs:
       - name: Init Packer
         run: ./packer init .
       - name: Check docker
-        run: docker run --rm -it hello-world
+        run: docker run --rm -t hello-world
       - name: Build Image
         run: |
           ./packer build \
             -var roles_path="${GITHUB_WORKSPACE}/../" \
             consul.pkr.hcl
-
+  test:
+    needs:
+      - build
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Not yet
+        run: echo "not implemented yet"
   release:
     needs:
       - secure
