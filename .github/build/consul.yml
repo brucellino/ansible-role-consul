@@ -1,0 +1,42 @@
+# Playbook to deploy a base Consul cluster
+- name: Add python3
+  hosts: pis
+  gather_facts: false
+  tasks:
+    - name: Prep
+      ansible.builtin.raw: |
+        apt-get update && \
+        DEBIAN_FRONTEND=noninteractive \
+        apt-get install -y python3 software-properties-common
+      changed_when: false
+- name: Packages
+  hosts: pis
+  vars:
+    consul_version: 1.12.2
+    enable_consul_template: true
+    enable_vault: true
+  tasks:
+    - name: Add base prerequisites
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - curl
+        - gnupg
+        - unzip
+        - jq
+        - tmux
+    - name: Add hashicorp key
+      ansible.builtin.apt_key:
+        url: https://apt.releases.hashicorp.com/gpg
+        keyring: /usr/share/keyrings/hashicorp-archive-keyring.gpg
+        state: present
+        validate_certs: true
+    - name: Add hashi repo
+      ansible.builtin.apt_repository:
+        repo: "deb [arch=arm64 signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main" # noqa yaml
+        state: present
+        mode: 0644
+        update_cache: true
+        validate_certs: true
+        filename: hashicorp.list
