@@ -73,12 +73,12 @@ build {
   }
   post-processors {
     post-processor "docker-tag" {
-      repository = "ghcr.io/brucellino/consul-ubuntu-amd64"
+      repository = "ghcr.io/brucellino/ansible-role-consul/consul-ubuntu-amd64"
       tags       = ["latest"]
       only       = ["docker.ubuntu-amd64"]
     }
     post-processor "docker-tag" {
-      repository = "ghcr.io/brucellino/consul-ubuntu-amd64"
+      repository = "ghcr.io/brucellino/ansible-role-conusul/consul-ubuntu-arm64"
       tags       = ["latest"]
       only       = ["docker.ubuntu-arm64"]
     }
