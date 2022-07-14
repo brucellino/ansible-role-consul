@@ -52,8 +52,15 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Get Python
-        run: sudo apt-get install -y python3 python3-pip gzip
+      - name: Get Prerequisites
+        run: |
+          sudo apt-get install -y \
+          python3 \
+          python3-pip \
+          gzip \
+          qemu \
+          binfmt-support \
+          qemu-user-static
       - name: Add Ansible
         run: sudo -H pip3 install ansible
       - name: Get Packer
