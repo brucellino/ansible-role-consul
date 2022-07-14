@@ -27,7 +27,7 @@ source "docker" "ubuntu" {
   exec_user = "root"
   changes = [
     "USER root",
-    "LABEL VERSION=latest"
+    "LABEL VERSION=latest",
     "LABEL org.opencontainers.image.source https://github.com/brucellino/ansible-role-consul"
   ]
   run_command = [

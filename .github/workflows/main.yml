@@ -70,15 +70,12 @@ jobs:
           ./packer -version
       - name: Init Packer
         run: ./packer init .
-      - name: Check docker
-        run: docker run --rm -t hello-world
       - name: Build Image
         shell: 'script -q -e -c "bash {0}"'
-        env:
-          PACKER_LOG: 1
         run: |
           ./packer build \
             -var roles_path="${GITHUB_WORKSPACE}/../" \
+            -var docker_password=${{ secrets.GITHUB_TOKEN }} \
             consul.pkr.hcl
   test:
     needs:
