@@ -45,12 +45,12 @@ jobs:
       - secure
     name: Build Images
     env:
-      ANSIBLE_ROLES_PATH: ${GITHUB_WORKSPACE}/../
+      ANSIBLE_ROLES_PATH: "${GITHUB_WORKSPACE}/../"
     runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
-        working-directory: ${GITHUB_WORKSPACE}/.github/build/
+        working-directory: "${{ env.GITHUB_WORKSPACE }}/.github/build/"
     steps:
       - name: Checkout
         uses: actions/checkout@v2
