@@ -47,6 +47,11 @@ jobs:
     defaults:
       run:
         working-directory: ".github/build/"
+    strategy:
+      matrix:
+        target:
+          - "docker-ubuntu.docker.ubuntu-amd64"
+          - "docker-ubuntu.docker.ubuntu-arm64"
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -77,6 +82,7 @@ jobs:
           ./packer build \
             -var roles_path="${GITHUB_WORKSPACE}/../" \
             -var docker_password=${{ secrets.GITHUB_TOKEN }} \
+            -only=${{ matrix.target }} \
             consul.pkr.hcl
   test:
     needs:
