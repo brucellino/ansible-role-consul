@@ -19,8 +19,6 @@ jobs:
       - name: Lint
         uses: ansible-community/ansible-lint-action@main
   secure:
-    needs:
-      - lint
     name: Security
     runs-on: ubuntu-latest
     steps:
@@ -43,6 +41,7 @@ jobs:
   build:
     needs:
       - secure
+      - lint
     name: Build Images
     env:
       ANSIBLE_ROLES_PATH: "${GITHUB_WORKSPACE}/../"
@@ -73,6 +72,7 @@ jobs:
   release:
     needs:
       - secure
+      - lint
       - build
     name: Release
     runs-on: ubuntu-latest
