@@ -1,0 +1,17 @@
+# Playbook to deploy a base Consul cluster
+- name: Add python3
+  hosts: pis
+  gather_facts: false
+  tasks:
+    - name: Prep
+      ansible.builtin.raw: |
+        apt-get update && \
+        DEBIAN_FRONTEND=noninteractive \
+        apt-get install -y python3 software-properties-common
+      changed_when: false
+
+- name: Consul
+  hosts: pis
+  become: true
+  roles:
+    - ansible-role-consul

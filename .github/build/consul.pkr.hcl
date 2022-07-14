@@ -42,7 +42,7 @@ build {
   sources = ["source.docker.ubuntu"]
 
   provisioner "ansible" {
-    playbook_file = "consul.yml"
+    playbook_file = "playbook.yml"
     groups        = ["pis"]
     ansible_env_vars = [
       "ANSIBLE_HOST_KEY_CHECKING=False",

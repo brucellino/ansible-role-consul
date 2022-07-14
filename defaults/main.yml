@@ -4,7 +4,7 @@ prerequisites:
   focal:
     - curl
     - gnupg
-    - unzip
+    - gzip
     - jq
     - tmux
 hashi_releases_url: https://releases.hashicorp.com
