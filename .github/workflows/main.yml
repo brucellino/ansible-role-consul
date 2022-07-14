@@ -49,7 +49,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: "${{ env.GITHUB_WORKSPACE }}/.github/build/"
+        working-directory: ".github/build/"
     steps:
       - name: Checkout
         uses: actions/checkout@v2
