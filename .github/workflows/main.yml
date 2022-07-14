@@ -66,6 +66,9 @@ jobs:
       - name: Check docker
         run: docker run --rm -t hello-world
       - name: Build Image
+        shell: 'script -q -e -c "bash {0}"'
+        env:
+          PACKER_LOG: 1
         run: |
           ./packer build \
             -var roles_path="${GITHUB_WORKSPACE}/../" \
@@ -83,6 +86,7 @@ jobs:
       - secure
       - lint
       - build
+      - test
     name: Release
     runs-on: ubuntu-latest
     steps:

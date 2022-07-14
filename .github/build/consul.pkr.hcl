@@ -35,10 +35,6 @@ build {
   name    = "docker-ubuntu"
   sources = ["source.docker.ubuntu"]
 
-  provisioner "shell" {
-    inline = ["touch /tmp/hello"]
-  }
-
   provisioner "ansible" {
     playbook_file = "consul.yml"
     groups        = ["pis"]
