@@ -43,8 +43,6 @@ jobs:
       - secure
       - lint
     name: Build Images
-    env:
-      ANSIBLE_ROLES_PATH: "${GITHUB_WORKSPACE}/../"
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -67,6 +65,8 @@ jobs:
       - name: Init Packer
         run: ./packer init .
       - name: Build Image
+        env:
+          ANSIBLE_ROLES_PATH: "../../../"
         run: ./packer build consul.pkr.hcl
 
   release:
