@@ -43,8 +43,7 @@ jobs:
       - secure
       - lint
     name: Build Images
-    permissions:
-      packages: write
+    permissions: write-all
     runs-on: ubuntu-latest
     defaults:
       run:
