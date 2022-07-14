@@ -21,7 +21,8 @@ variable "docker_password" {
   sensitive = true
   default   = env("GITHUB_TOKEN")
 }
-source "docker" "ubuntu" {
+
+source "docker" "ubuntu-arm64" {
   image     = "arm64v8/ubuntu:focal"
   commit    = true
   exec_user = "root"
@@ -32,14 +33,33 @@ source "docker" "ubuntu" {
   ]
   run_command = [
     "-d", "-i", "-t", "--entrypoint=/bin/bash",
-    "--name=ubuntu-consul",
+    "--name=ubuntu-consul-arm64",
+    "--", "{{ .Image }}"
+  ]
+}
+
+source "docker" "ubuntu-amd64" {
+  image     = "ubuntu:focal"
+  commit    = true
+  exec_user = "root"
+  changes = [
+    "USER root",
+    "LABEL VERSION=latest",
+    "LABEL org.opencontainers.image.source https://github.com/brucellino/ansible-role-consul"
+  ]
+  run_command = [
+    "-d", "-i", "-t", "--entrypoint=/bin/bash",
+    "--name=ubuntu-consul-amd64",
     "--", "{{ .Image }}"
   ]
 }
 
 build {
-  name    = "docker-ubuntu"
-  sources = ["source.docker.ubuntu"]
+  name = "docker-ubuntu"
+  sources = [
+    "source.docker.ubuntu-arm64",
+    "source.docker.ubuntu-amd64"
+  ]
 
   provisioner "ansible" {
     playbook_file = "playbook.yml"
@@ -51,11 +71,16 @@ build {
       "ANSIBLE_ROLES_PATH=${var.roles_path}"
     ]
   }
-
   post-processors {
     post-processor "docker-tag" {
-      repository = "ghcr.io/brucellino/consul-arm64"
+      repository = "ghcr.io/brucellino/consul-ubuntu-amd64"
       tags       = ["latest"]
+      only       = ["docker.ubuntu-amd64"]
+    }
+    post-processor "docker-tag" {
+      repository = "ghcr.io/brucellino/consul-ubuntu-amd64"
+      tags       = ["latest"]
+      only       = ["docker.ubuntu-arm64"]
     }
     post-processor "docker-push" {
       login          = true
