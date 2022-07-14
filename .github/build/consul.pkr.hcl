@@ -12,9 +12,8 @@ packer {
   required_version = ">=1.7.0, <2.0.0"
 }
 
-variable "ansible_roles_path" {
+variable "roles_path" {
   type    = string
-  default = env("GITHUB_WORKSPACE")
 }
 
 source "docker" "ubuntu" {
@@ -47,7 +46,7 @@ build {
       "ANSIBLE_HOST_KEY_CHECKING=False",
       "ANSIBLE_SSH_ARGS='-o ForwardAgent=yes -o ControlMaster=auto -o ControlPersist=60s'",
       "ANSIBLE_NOCOLOR=True",
-      "ANSIBLE_ROLES_PATH=${var.ansible_roles_path}"
+      "ANSIBLE_ROLES_PATH=${var.roles_path}"
     ]
   }
 }

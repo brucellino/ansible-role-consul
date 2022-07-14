@@ -64,10 +64,13 @@ jobs:
           ./packer -version
       - name: Init Packer
         run: ./packer init .
+      - name: Check docker
+        run: docker run --rm -it hello-world
       - name: Build Image
-        env:
-          ANSIBLE_ROLES_PATH: "../../../"
-        run: ./packer build consul.pkr.hcl
+        run: |
+          ./packer build \
+            -var roles_path="${GITHUB_WORKSPACE}/../" \
+            consul.pkr.hcl
 
   release:
     needs:
