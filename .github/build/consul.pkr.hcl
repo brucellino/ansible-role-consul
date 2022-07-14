@@ -13,9 +13,14 @@ packer {
 }
 
 variable "roles_path" {
-  type    = string
+  type = string
 }
 
+variable "docker_password" {
+  type      = string
+  sensitive = true
+  default   = env("GITHUB_TOKEN")
+}
 source "docker" "ubuntu" {
   image     = "arm64v8/ubuntu:focal"
   commit    = true
@@ -23,6 +28,7 @@ source "docker" "ubuntu" {
   changes = [
     "USER root",
     "LABEL VERSION=latest"
+    "LABEL org.opencontainers.image.source https://github.com/brucellino/ansible-role-consul"
   ]
   run_command = [
     "-d", "-i", "-t", "--entrypoint=/bin/bash",
@@ -44,5 +50,18 @@ build {
       "ANSIBLE_NOCOLOR=True",
       "ANSIBLE_ROLES_PATH=${var.roles_path}"
     ]
+  }
+
+  post-processors {
+    post-processor "docker-tag" {
+      repository = "ghcr.io/brucellino/consul-arm64"
+      tags       = ["latest"]
+    }
+    post-processor "docker-push" {
+      login          = true
+      login_server   = "https://ghcr.io"
+      login_username = "brucellino"
+      login_password = var.docker_password
+    }
   }
 }
