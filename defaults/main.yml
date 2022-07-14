@@ -7,7 +7,7 @@ prerequisites:
     - gzip
     - jq
     - tmux
-hashi_releases_url: https://releases.hashicorp.com
+hashicorp_releases_url: https://releases.hashicorp.com
 consul_arch:
   x86_64: amd64
   aarch64: arm64
