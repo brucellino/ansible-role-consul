@@ -22,9 +22,8 @@ variable "docker_password" {
   default   = env("GITHUB_TOKEN")
 }
 
-local "docker_registry" {
-  type = string
-  default = "ghcr.io/brucellino/ansible-role-consul"
+locals {
+  docker_registry = "ghcr.io/brucellino/ansible-role-consul"
 }
 
 variable "tag_version" {
@@ -92,13 +91,13 @@ build {
     }
 
     post-processor "docker-tag" {
-      repository = "${docker_registry}/consul-ubuntu-amd64"
+      repository = "${local.docker_registry}/consul-ubuntu-amd64"
       tags       = [var.tag_version]
       only       = ["docker.ubuntu-amd64"]
     }
     post-processor "shell-local" {
       inline = [
-        "./trivy image -s CRITICAL,HIGH --exit-code 1 --format github --ignore-unfixed ghcr.io/brucellino/ansible-role-consul/consul-ubuntu-amd64:${var.tag_version}"
+        "./trivy image -s CRITICAL,HIGH --exit-code 0 --format github --ignore-unfixed ${local.docker_registry}/consul-ubuntu-amd64:${var.tag_version}"
       ]
       only = ["docker.ubuntu-amd64"]
     }
@@ -110,7 +109,7 @@ build {
 
     post-processor "shell-local" {
       inline = [
-        "trivy image -s CRITICAL,HIGH --ignore-unfixed ghcr.io/brucellino/ansible-role-consul/consul-ubuntu-arm64:${var.tag_version}"
+        "trivy image -s CRITICAL,HIGH --exit-code 0 --format github --ignore-unfixed ${local.docker_registry}/consul-ubuntu-arm64:${var.tag_version}"
       ]
       only = ["docker.ubuntu-arm64"]
     }
