@@ -1,0 +1,48 @@
+---
+# Push an image tagged with the latest version
+# when a release is cut by semantic-release
+name: Publish
+on:
+  release:
+    types:
+      - published
+jobs:
+  publish:
+    needs:
+      - release
+    name: Publish image version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Get Prerequisites
+        run: |
+          sudo apt-get install -y \
+          binfmt-support \
+          gzip \
+          python3 \
+          python3-pip \
+          qemu \
+          qemu-user-static
+          unzip \
+      - name: Add Ansible
+        run: sudo -H pip3 install ansible
+      - name: Get Packer
+        run: |
+          curl -fL https://releases.hashicorp.com/packer/1.8.2/packer_1.8.2_linux_amd64.zip | gunzip ->packer && \
+          chmod u+x packer && \
+          ./packer -version
+      - name: Init Packer
+        run: ./packer init .
+      - name: Build Image (PR)
+        shell: 'script -q -e -c "bash {0}"'
+        if: ${{ github.ref_name == 'main' }}
+        run: |
+          ./packer build \
+            -var roles_path="${GITHUB_WORKSPACE}/../" \
+            -var docker_password=${{ secrets.GITHUB_TOKEN }} \
+            -var tag_version="pr-${{ github.ref }}" \
+            -only=${{ matrix.target }} \
+            consul.pkr.hcl
