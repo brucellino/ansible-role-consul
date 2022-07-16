@@ -22,6 +22,12 @@ variable "docker_password" {
   default   = env("GITHUB_TOKEN")
 }
 
+variable "tag_version" {
+  type = string
+  sensitive = false
+  default = "latest"
+}
+
 source "docker" "ubuntu-arm64" {
   image     = "arm64v8/ubuntu:focal"
   commit    = true
@@ -74,7 +80,7 @@ build {
   post-processors {
     post-processor "docker-tag" {
       repository = "ghcr.io/brucellino/ansible-role-consul/consul-ubuntu-amd64"
-      tags       = ["latest"]
+      tags       = ["latest",""]
       only       = ["docker.ubuntu-amd64"]
     }
     post-processor "docker-tag" {
