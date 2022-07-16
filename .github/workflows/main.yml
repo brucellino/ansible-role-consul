@@ -90,6 +90,9 @@ jobs:
       - build
     name: Test
     runs-on: ubuntu-latest
+    services:
+      vault:
+        image: "hashicorp/vault:1.11"
     steps:
       - name: Not yet
         run: echo "not implemented yet"
