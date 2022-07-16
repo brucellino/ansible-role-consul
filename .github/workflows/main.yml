@@ -102,14 +102,14 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VAULT_ADDR: vault:8200
-      VAULT_TOKEN: token
+      VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
     services:
       vault:
         image: "public.ecr.aws/hashicorp/vault:1.11"
         ports:
           - 8200:8200
         env:
-          VAULT_DEV_ROOT_TOKEN_ID: test
+          VAULT_DEV_ROOT_TOKEN_ID: ${{ secrets.VAULT_TOKEN }}
     if: github.event_name == 'pull_request'
     container:
       image: ghcr.io/brucellino/ansible-role-consul/consul-ubuntu-amd64:pr-${{ github.event.pull_request.number }}
@@ -129,14 +129,14 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VAULT_ADDR: vault:8200
-      VAULT_TOKEN: token
+      VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
     services:
       vault:
         image: "public.ecr.aws/hashicorp/vault:1.11"
         ports:
           - 8200:8200
         env:
-          VAULT_DEV_ROOT_TOKEN_ID: test
+          VAULT_DEV_ROOT_TOKEN_ID: ${{ secrets.VAULT_TOKEN }}
     if: github.ref_name == 'main' && github.ref_type == 'branch'
     container:
       image: ghcr.io/brucellino/ansible-role-consul/consul-ubuntu-amd64:pr-${{ github.event.pull_request.number }}
