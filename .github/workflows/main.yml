@@ -98,7 +98,7 @@ jobs:
   test-pr:
     needs:
       - build
-    name: Test
+    name: Test PR
     runs-on: ubuntu-latest
     env:
       VAULT_ADDR: vault:8200
@@ -122,6 +122,33 @@ jobs:
       - name: Create gossip key
         run: ./vault kv put kv gossip_key=$(consul keygen)
 
+  test:
+    needs:
+      - build
+    name: Test
+    runs-on: ubuntu-latest
+    env:
+      VAULT_ADDR: vault:8200
+      VAULT_TOKEN: token
+    services:
+      vault:
+        image: "public.ecr.aws/hashicorp/vault:1.11"
+        ports:
+          - 8200:8200
+        env:
+          VAULT_DEV_ROOT_TOKEN_ID: test
+    if: github.ref_name == 'main' && github.ref_type == 'branch'
+    container:
+      image: ghcr.io/brucellino/ansible-role-consul/consul-ubuntu-amd64:pr-${{ github.event.pull_request.number }}
+    steps:
+      - name: Get Vault client
+        run: |
+          curl -fL https://releases.hashicorp.com/vault/1.11.0/vault_1.11.0_linux_amd64.zip \
+          | gunzip -> vault ; \
+          chmod u+x vault
+      - name: Create gossip key
+        run: ./vault kv put kv gossip_key=$(consul keygen)
+
   release:
     needs:
       - secure
@@ -129,6 +156,7 @@ jobs:
       - build
       - test
     name: Release
+    if: github.ref_name == 'main' && github.ref_type == 'branch'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -144,7 +172,6 @@ jobs:
           npm install -D '@semantic-release/changelog' \
                          '@semantic-release/github' \
                          '@semantic-release/git'
-
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
