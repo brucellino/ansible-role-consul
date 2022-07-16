@@ -9,7 +9,6 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
-      - run: "Running on PR ${{ github.event.pull_request }}"
       - name: GHCR Delete Image
         uses: bots-house/ghcr-delete-image-action@v1.0.1
         with:
