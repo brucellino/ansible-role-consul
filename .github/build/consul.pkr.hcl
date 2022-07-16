@@ -78,7 +78,7 @@ build {
       only       = ["docker.ubuntu-amd64"]
     }
     post-processor "docker-tag" {
-      repository = "ghcr.io/brucellino/ansible-role-conusul/consul-ubuntu-arm64"
+      repository = "ghcr.io/brucellino/ansible-role-consul/consul-ubuntu-arm64"
       tags       = ["latest"]
       only       = ["docker.ubuntu-arm64"]
     }
