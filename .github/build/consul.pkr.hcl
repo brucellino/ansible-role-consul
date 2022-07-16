@@ -109,7 +109,7 @@ build {
 
     post-processor "shell-local" {
       inline = [
-        "trivy image -s CRITICAL,HIGH --exit-code 0 --format github --ignore-unfixed ${local.docker_registry}/consul-ubuntu-arm64:${var.tag_version}"
+        "./trivy image -s CRITICAL,HIGH --exit-code 0 --format github --ignore-unfixed ${local.docker_registry}/consul-ubuntu-arm64:${var.tag_version}"
       ]
       only = ["docker.ubuntu-arm64"]
     }
