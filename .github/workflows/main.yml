@@ -7,6 +7,14 @@ on:
   pull_request:
     branches:
       - main
+    paths-ignore:
+      - 'README.md'
+      - 'commitlint.config.js'
+      - '.releaserc.yaml'
+      - '.ansible-lint'
+      - '.config/**'
+      - '.secrets.baseline'
+      - 'CHANGELOG.md'
 jobs:
   lint:
     name: Static Checks
@@ -77,12 +85,25 @@ jobs:
           ./packer -version
       - name: Init Packer
         run: ./packer init .
-      - name: Build Image
+      - name: Build Image (PR)
         shell: 'script -q -e -c "bash {0}"'
+        if: ${{ github.event_name == 'pull_request' }}
         run: |
           ./packer build \
             -var roles_path="${GITHUB_WORKSPACE}/../" \
             -var docker_password=${{ secrets.GITHUB_TOKEN }} \
+            -var tag_version="pr-${{ github.event.pull_request.number }}" \
+            -only=${{ matrix.target }} \
+            consul.pkr.hcl
+      - name: Build Image main
+        shell: 'script -q -e -c "bash {0}"'
+        # Condition should be push to main branch
+        if: ${{ github.event_name != 'pull_request' }}
+        run: |
+          ./packer build \
+            -var roles_path="${GITHUB_WORKSPACE}/../" \
+            -var docker_password=${{ secrets.GITHUB_TOKEN }} \
+            -var tag_version="latest" \
             -only=${{ matrix.target }} \
             consul.pkr.hcl
   test:
@@ -90,6 +111,9 @@ jobs:
       - build
     name: Test
     runs-on: ubuntu-latest
+    services:
+      vault:
+        image: "public.ecr.aws/hashicorp/vault:1.11"
     steps:
       - name: Not yet
         run: echo "not implemented yet"
