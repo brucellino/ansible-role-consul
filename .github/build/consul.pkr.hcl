@@ -27,9 +27,9 @@ locals {
 }
 
 variable "tag_version" {
-  type = string
+  type      = string
   sensitive = false
-  default = "latest"
+  default   = "latest"
 }
 
 source "docker" "ubuntu-arm64" {
