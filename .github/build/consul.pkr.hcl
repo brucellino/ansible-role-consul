@@ -22,10 +22,14 @@ variable "docker_password" {
   default   = env("GITHUB_TOKEN")
 }
 
+locals {
+  docker_registry = "ghcr.io/brucellino/ansible-role-consul"
+}
+
 variable "tag_version" {
-  type = string
+  type      = string
   sensitive = false
-  default = "latest"
+  default   = "latest"
 }
 
 source "docker" "ubuntu-arm64" {
@@ -77,17 +81,39 @@ build {
       "ANSIBLE_ROLES_PATH=${var.roles_path}"
     ]
   }
+
   post-processors {
+    # Get Trivy
+    post-processor "shell-local" {
+      inline = [
+        "curl -Lf https://github.com/aquasecurity/trivy/releases/download/v0.30.0/trivy_0.30.0_Linux-64bit.tar.gz | tar xz trivy"
+      ]
+    }
+
     post-processor "docker-tag" {
-      repository = "ghcr.io/brucellino/ansible-role-consul/consul-ubuntu-amd64"
+      repository = "${local.docker_registry}/consul-ubuntu-amd64"
       tags       = [var.tag_version]
       only       = ["docker.ubuntu-amd64"]
     }
+    post-processor "shell-local" {
+      inline = [
+        "./trivy image -s CRITICAL,HIGH --exit-code 0 --format github --ignore-unfixed ${local.docker_registry}/consul-ubuntu-amd64:${var.tag_version}"
+      ]
+      only = ["docker.ubuntu-amd64"]
+    }
     post-processor "docker-tag" {
-      repository = "ghcr.io/brucellino/ansible-role-consul/consul-ubuntu-arm64"
+      repository = "${local.docker_registry}/consul-ubuntu-arm64"
       tags       = [var.tag_version]
       only       = ["docker.ubuntu-arm64"]
     }
+
+    post-processor "shell-local" {
+      inline = [
+        "./trivy image -s CRITICAL,HIGH --exit-code 0 --format github --ignore-unfixed ${local.docker_registry}/consul-ubuntu-arm64:${var.tag_version}"
+      ]
+      only = ["docker.ubuntu-arm64"]
+    }
+
     post-processor "docker-push" {
       login          = true
       login_server   = "https://ghcr.io"

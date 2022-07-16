@@ -8,8 +8,11 @@ on:
       - published
 jobs:
   publish:
-    needs:
-      - release
+    strategy:
+      matrix:
+        target:
+          - "docker-ubuntu.docker.ubuntu-amd64"
+          - "docker-ubuntu.docker.ubuntu-arm64"
     name: Publish image version
     runs-on: ubuntu-latest
     steps:
