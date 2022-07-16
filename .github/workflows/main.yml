@@ -87,7 +87,7 @@ jobs:
         run: ./packer init .
       - name: Build Image (PR)
         shell: 'script -q -e -c "bash {0}"'
-        if: ${{ gitub.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'pull_request' }}
         run: |
           ./packer build \
             -var roles_path="${GITHUB_WORKSPACE}/../" \
