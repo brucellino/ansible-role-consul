@@ -95,6 +95,17 @@ jobs:
             -var tag_version="pr-${{ github.event.pull_request.number }}" \
             -only=${{ matrix.target }} \
             consul.pkr.hcl
+      - name: Build Image main
+        shell: 'script -q -e -c "bash {0}"'
+        # Condition should be push to main branch
+        if: ${{ github.event_name != 'pull_request' }}
+        run: |
+          ./packer build \
+            -var roles_path="${GITHUB_WORKSPACE}/../" \
+            -var docker_password=${{ secrets.GITHUB_TOKEN }} \
+            -var tag_version="latest" \
+            -only=${{ matrix.target }} \
+            consul.pkr.hcl
   test:
     needs:
       - build
