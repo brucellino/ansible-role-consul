@@ -31,7 +31,7 @@ consul_template_zip_url: "{{ hashicorp_releases_url }}/consul-template/{{ consul
 # Consul gossip key and cluster certificates
 vault_version: 1.11.0
 enable_vault_agent: true
-vault_zip_url: "{{ hashicorp_releases_url }}/vault/{{ vault_version }}/vault_{{ vault_version }}_linux_{{ arch[ansible_archittecture] }}.zip" # noqa yaml[line-length]
+vault_zip_url: "{{ hashicorp_releases_url }}/vault/{{ vault_version }}/vault_{{ vault_version }}_linux_{{ arch[ansible_architecture] }}.zip" # noqa yaml[line-length]
 vault_agent_auto_auth_enabled: true
 # The default auto auth method for
 vault_agent_auto_auth_method: approle
