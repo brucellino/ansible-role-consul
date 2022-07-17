@@ -126,7 +126,7 @@ jobs:
           | gunzip -> vault ; \
           chmod u+x vault
       - name: Check vault
-        run: vault status
+        run: ./vault status
       - name: Create gossip key
         run: ./vault kv put kv/consul-test gossip_key=$(consul keygen)
       - name: Create Certificates
