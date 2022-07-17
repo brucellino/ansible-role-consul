@@ -1,2 +1,3 @@
 ---
 # vars file for ansible-role-template
+approle_mount_path: "hashiatho.me"
