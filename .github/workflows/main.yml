@@ -110,6 +110,11 @@ jobs:
           - 8200:8200
         env:
           VAULT_DEV_ROOT_TOKEN_ID: ${{ secrets.VAULT_TOKEN }}
+        options: >-
+          --health-cmd "curl -f http://localhost:8200/v1/sys/health?standbyok=true"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     if: github.event_name == 'pull_request'
     container:
       image: ghcr.io/brucellino/ansible-role-consul/consul-ubuntu-amd64:pr-${{ github.event.pull_request.number }}
