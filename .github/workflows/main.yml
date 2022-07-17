@@ -126,17 +126,21 @@ jobs:
           | gunzip -> vault ; \
           chmod u+x vault
       - name: Create gossip key
-        run: ./vault kv put kv gossip_key=$(consul keygen)
-      - name: Create
+        run: ./vault kv put kv/consul-test gossip_key=$(consul keygen)
+      - name: Create Certificates
+        run: consul tls ca create
+      - name: Put the certs in the Vault
+        run: >-
+          cat consul-agent-ca.pem \
+          | ./vault kv patch kv/consul-test ca_cert=- ;
+          cat consul-agent-key-ca.pem \
+          | ./vault kv patch kv/consul-test ca_key=-
 
   test:
     needs:
       - build
     name: Test
     runs-on: ubuntu-latest
-    env:
-      VAULT_ADDR: http://vault:8200
-      VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
     services:
       vault:
         image: "public.ecr.aws/hashicorp/vault:1.11"
@@ -147,6 +151,9 @@ jobs:
     if: github.ref_name == 'main' && github.ref_type == 'branch'
     container:
       image: ghcr.io/brucellino/ansible-role-consul/consul-ubuntu-amd64:pr-${{ github.event.pull_request.number }}
+      env:
+        VAULT_ADDR: http://vault:8200
+        VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
     steps:
       - name: Get Vault client
         run: |
