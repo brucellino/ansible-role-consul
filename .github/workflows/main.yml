@@ -111,7 +111,7 @@ jobs:
         env:
           VAULT_DEV_ROOT_TOKEN_ID: ${{ secrets.VAULT_TOKEN }}
         options: >-
-          --health-cmd "curl -f http://localhost:8200/v1/sys/health?standbyok=true"
+          --health-cmd "VAULT_ADDR=http://0.0.0.0:8200 vault status"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -153,6 +153,8 @@ jobs:
           chmod u+x vault
       - name: Create gossip key
         run: ./vault kv put kv gossip_key=$(consul keygen)
+      - name: Create Server certificates
+        run: consul tls create
 
   release:
     needs:
