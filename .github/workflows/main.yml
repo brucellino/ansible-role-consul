@@ -136,7 +136,7 @@ jobs:
         run: >-
           cat consul-agent-ca.pem \
           | ./vault kv patch kv/consul-test ca_cert=- ;
-          cat consul-agent-key-ca.pem \
+          cat consul-agent-ca-key.pem \
           | ./vault kv patch kv/consul-test ca_key=-
       - name: Create server certs
         run: consul tls cert create -server -dc dc1 -domain consul
