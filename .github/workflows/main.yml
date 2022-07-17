@@ -125,6 +125,8 @@ jobs:
           curl -fL https://releases.hashicorp.com/vault/1.11.0/vault_1.11.0_linux_amd64.zip \
           | gunzip -> vault ; \
           chmod u+x vault
+      - name: Check vault
+        run: vault status
       - name: Create gossip key
         run: ./vault kv put kv/consul-test gossip_key=$(consul keygen)
       - name: Create Certificates
@@ -135,6 +137,8 @@ jobs:
           | ./vault kv patch kv/consul-test ca_cert=- ;
           cat consul-agent-key-ca.pem \
           | ./vault kv patch kv/consul-test ca_key=-
+      - name: Create server certs
+        run: consul tls cert create -server -dc dc1 -domain consul
 
   test:
     needs:
@@ -164,6 +168,7 @@ jobs:
         run: ./vault kv put kv gossip_key=$(consul keygen)
       - name: Create Server certificates
         run: consul tls create
+
 
   release:
     needs:
