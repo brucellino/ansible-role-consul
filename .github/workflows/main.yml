@@ -127,7 +127,7 @@ jobs:
       - name: Vault login
         run: ./vault login ${{ secrets.VAULT_TOKEN }}
       - name: Enable KV engine
-        run: ./vault secrets enable --path kv kv
+        run: ./vault secrets enable --path kv kv-v2
       - name: Create gossip key
         run: ./vault kv put kv/consul-test gossip_key=$(consul keygen)
       - name: Create Certificates
