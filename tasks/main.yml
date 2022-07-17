@@ -1,3 +1,4 @@
 ---
 # tasks file for ansible-role-template
 - include_tasks: prerequisites.yml
+- include_tasks: vault-agent.yml

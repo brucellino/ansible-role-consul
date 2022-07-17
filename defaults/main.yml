@@ -8,8 +8,10 @@ prerequisites:
     - jq
     - tmux
     - unzip
+
 hashicorp_releases_url: https://releases.hashicorp.com
-consul_arch:
+
+arch:
   x86_64: amd64
   aarch64: arm64
   armv6l: arm
@@ -17,9 +19,19 @@ consul_arch:
 # Consul version and zipfile url values. These are used to obtain the Consul binaries
 # Consul is not optional
 consul_version: 1.12.3
-consul_zip_url: "{{ hashicorp_releases_url }}/consul/{{ consul_version }}/consul_{{ consul_version }}_linux_{{ consul_arch[ansible_architecture] }}.zip" # noqa yaml[line-length]
+consul_zip_url: "{{ hashicorp_releases_url }}/consul/{{ consul_version }}/consul_{{ consul_version }}_linux_{{ arch[ansible_architecture] }}.zip" # noqa yaml[line-length]
 
 # Consul Template variables. See https://github.com/hashicorp/consul-template
 enable_consul_template: true  # Should we provision Consul Template on this instance (boolean)
 consul_template_version: 0.29.1 # See https://releases.hashicorp.com/consul-template for details
-consul_template_zip_url: "{{ hashicorp_releases_url }}/consul-template/{{ consul_template_version }}/consul-template_{{ consul_template_version }}_linux_{{ consul_arch[ansible_architecture] }}.zip" # noqa yaml[line-length]
+consul_template_zip_url: "{{ hashicorp_releases_url }}/consul-template/{{ consul_template_version }}/consul-template_{{ consul_template_version }}_linux_{{ arch[ansible_architecture] }}.zip" # noqa yaml[line-length]
+
+# Vault variables.
+# Vault agent allows us to provide the consul secrets dynamically --
+# Consul gossip key and cluster certificates
+vault_version: 1.11.0
+enable_vault_agent: true
+vault_zip_url: "{{ hashicorp_releases_url }}/vault/{{ vault_version }}/vault_{{ vault_version }}_linux_{{ arch[ansible_archittecture] }}.zip" # noqa yaml[line-length]
+vault_agent_auto_auth_enabled: true
+# The default auto auth method for
+vault_agent_auto_auth_method: approle

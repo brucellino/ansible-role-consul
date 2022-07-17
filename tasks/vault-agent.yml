@@ -1,0 +1,24 @@
+---
+# Vault agent configuration
+- name: Get Vault
+  become: true
+  ansible.builtin.unarchive:
+    src: "{{ vault_zip_url }}"
+    dest: /usr/bin/
+    creates: /usr/bin/vault
+    list_files: false
+    keep_newer: false
+    remote_src: true
+    validate_certs: true
+    mode: 0777
+    owner: root
+    group: root
+
+- name: Create Vault templates
+  ansible.builtin.template:
+    src: etc/vault-agent.hcl.j2
+    dest: /etc/vault-agent.hcl
+    backup: true
+    mode: 0644
+    owner: root
+    group: root

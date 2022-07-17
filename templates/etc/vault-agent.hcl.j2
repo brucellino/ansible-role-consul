@@ -1,0 +1,27 @@
+pid_file = "./pidfile"
+
+{% if vault_agent_auto_auth_enabled | bool | default(false) %}
+auto_auth {
+  {% if vault_agent_auto_auth_method == 'approle' %}
+  method {
+    type = "approle"
+    mount_path = "{{ approle_mount_path }}"
+    config = {
+      role_id_file_path = /etc/vault_roleid
+      role = "app-role"
+    }
+  }
+  {% endif %}
+
+  sink "file" {
+    config = {
+      path = "/etc/.token"
+    }
+  }
+}
+{% endif %}
+
+template {
+  source      = "/etc/consul.d/consul-server.hcl.tmpl"
+  destination = "/etc/consul.d/consul-server.hcl"
+}
