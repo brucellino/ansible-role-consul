@@ -95,6 +95,16 @@ jobs:
             -var tag_version="pr-${{ github.event.pull_request.number }}" \
             -only=${{ matrix.target }} \
             consul.pkr.hcl
+      - name: Build Image
+        shell: 'script -q -e -c "bash {0}"'
+        if: ${{ github.ref_name == 'main' }}
+        run: |
+          ./packer build \
+            -var roles_path="${GITHUB_WORKSPACE}/../" \
+            -var docker_password=${{ secrets.GITHUB_TOKEN }} \
+            -var tag_version="latest" \
+            -only=${{ matrix.target }} \
+            consul.pkr.hcl
   test-pr:
     needs:
       - build
@@ -144,7 +154,7 @@ jobs:
   test:
     needs:
       - build
-    name: Test
+    name: Test main
     runs-on: ubuntu-latest
     services:
       vault:
@@ -153,9 +163,14 @@ jobs:
           - 8200:8200
         env:
           VAULT_DEV_ROOT_TOKEN_ID: ${{ secrets.VAULT_TOKEN }}
+        options: >-
+          --health-cmd "VAULT_ADDR=http://0.0.0.0:8200 vault status"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     if: github.ref_name == 'main' && github.ref_type == 'branch'
     container:
-      image: ghcr.io/brucellino/ansible-role-consul/consul-ubuntu-amd64:pr-${{ github.event.pull_request.number }}
+      image: ghcr.io/brucellino/ansible-role-consul/consul-ubuntu-amd64:latest
       env:
         VAULT_ADDR: http://vault:8200
         VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
@@ -165,10 +180,22 @@ jobs:
           curl -fL https://releases.hashicorp.com/vault/1.11.0/vault_1.11.0_linux_amd64.zip \
           | gunzip -> vault ; \
           chmod u+x vault
+      - name: Vault login
+        run: ./vault login ${{ secrets.VAULT_TOKEN }}
+      - name: Enable KV engine
+        run: ./vault secrets enable --path kv kv-v2
       - name: Create gossip key
-        run: ./vault kv put kv gossip_key=$(consul keygen)
-      - name: Create Server certificates
-        run: consul tls create
+        run: ./vault kv put kv/consul-test gossip_key=$(consul keygen)
+      - name: Create Certificates
+        run: consul tls ca create
+      - name: Put the certs in the Vault
+        run: >-
+          cat consul-agent-ca.pem
+          | ./vault kv patch kv/consul-test ca_cert=- ;
+          cat consul-agent-ca-key.pem
+          | ./vault kv patch kv/consul-test ca_key=-
+      - name: Create server certs
+        run: consul tls cert create -server -dc dc1 -domain consul
 
 
   release:
