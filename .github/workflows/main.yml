@@ -95,6 +95,52 @@ jobs:
             -var tag_version="pr-${{ github.event.pull_request.number }}" \
             -only=${{ matrix.target }} \
             consul.pkr.hcl
+  test-pr:
+    needs:
+      - build
+    name: Test PR
+    runs-on: ubuntu-latest
+    services:
+      vault:
+        image: "public.ecr.aws/hashicorp/vault:1.11"
+        ports:
+          - 8200:8200
+        env:
+          VAULT_DEV_ROOT_TOKEN_ID: ${{ secrets.VAULT_TOKEN }}
+        options: >-
+          --health-cmd "VAULT_ADDR=http://0.0.0.0:8200 vault status"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    if: github.event_name == 'pull_request'
+    container:
+      image: ghcr.io/brucellino/ansible-role-consul/consul-ubuntu-amd64:pr-${{ github.event.pull_request.number }}
+      env:
+        VAULT_ADDR: http://vault:8200
+        VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
+    steps:
+      - name: Get Vault client
+        run: |
+          curl -fL https://releases.hashicorp.com/vault/1.11.0/vault_1.11.0_linux_amd64.zip \
+          | gunzip -> vault ; \
+          chmod u+x vault
+      - name: Vault login
+        run: ./vault login ${{ secrets.VAULT_TOKEN }}
+      - name: Enable KV engine
+        run: ./vault secrets enable --path kv kv-v2
+      - name: Create gossip key
+        run: ./vault kv put kv/consul-test gossip_key=$(consul keygen)
+      - name: Create Certificates
+        run: consul tls ca create
+      - name: Put the certs in the Vault
+        run: >-
+          cat consul-agent-ca.pem
+          | ./vault kv patch kv/consul-test ca_cert=- ;
+          cat consul-agent-ca-key.pem
+          | ./vault kv patch kv/consul-test ca_key=-
+      - name: Create server certs
+        run: consul tls cert create -server -dc dc1 -domain consul
+
   test:
     needs:
       - build
@@ -103,9 +149,28 @@ jobs:
     services:
       vault:
         image: "public.ecr.aws/hashicorp/vault:1.11"
+        ports:
+          - 8200:8200
+        env:
+          VAULT_DEV_ROOT_TOKEN_ID: ${{ secrets.VAULT_TOKEN }}
+    if: github.ref_name == 'main' && github.ref_type == 'branch'
+    container:
+      image: ghcr.io/brucellino/ansible-role-consul/consul-ubuntu-amd64:pr-${{ github.event.pull_request.number }}
+      env:
+        VAULT_ADDR: http://vault:8200
+        VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
     steps:
-      - name: Not yet
-        run: echo "not implemented yet"
+      - name: Get Vault client
+        run: |
+          curl -fL https://releases.hashicorp.com/vault/1.11.0/vault_1.11.0_linux_amd64.zip \
+          | gunzip -> vault ; \
+          chmod u+x vault
+      - name: Create gossip key
+        run: ./vault kv put kv gossip_key=$(consul keygen)
+      - name: Create Server certificates
+        run: consul tls create
+
+
   release:
     needs:
       - secure
@@ -113,6 +178,7 @@ jobs:
       - build
       - test
     name: Release
+    if: github.ref_name == 'main' && github.ref_type == 'branch'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -128,7 +194,6 @@ jobs:
           npm install -D '@semantic-release/changelog' \
                          '@semantic-release/github' \
                          '@semantic-release/git'
-
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
