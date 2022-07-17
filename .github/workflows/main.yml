@@ -100,9 +100,6 @@ jobs:
       - build
     name: Test PR
     runs-on: ubuntu-latest
-    env:
-      VAULT_ADDR: http://vault:8200
-      VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
     services:
       vault:
         image: "public.ecr.aws/hashicorp/vault:1.11"
@@ -118,6 +115,10 @@ jobs:
     if: github.event_name == 'pull_request'
     container:
       image: ghcr.io/brucellino/ansible-role-consul/consul-ubuntu-amd64:pr-${{ github.event.pull_request.number }}
+      env:
+        VAULT_ADDR: http://vault:8200
+        VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
+
     steps:
       - name: Get Vault client
         run: |
@@ -126,6 +127,7 @@ jobs:
           chmod u+x vault
       - name: Create gossip key
         run: ./vault kv put kv gossip_key=$(consul keygen)
+      - name: Create
 
   test:
     needs:
