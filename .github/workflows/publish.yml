@@ -6,6 +6,8 @@ on:
   release:
     types:
       - published
+      - created
+      - released
 jobs:
   publish:
     strategy:
