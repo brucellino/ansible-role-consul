@@ -33,10 +33,10 @@
     owner: root
     group: root
 
-- name: Deliver consul vault agent template
-  ansible.builtin.copy:
-    dest: "{{ consul_config_dir }}/consul.hcl.tmpl"
-    src: etc/consul.d/consul.hcl.tmpl
+- name: Deliver agent templates
+  ansible.builtin.template:
+    dest: "{{ consul_config_dir }}/{{ item }}"
+    src: "etc/vault.d/{{ item }}.j2"
     backup: true
     mode: 0644
     owner: root

@@ -20,12 +20,24 @@ arch:
 # Consul is not optional
 consul_version: 1.12.3
 consul_zip_url: "{{ hashicorp_releases_url }}/consul/{{ consul_version }}/consul_{{ consul_version }}_linux_{{ arch[ansible_architecture] }}.zip" # noqa yaml[line-length]
+# Configuration defaults
 consul_config_dir: /etc/consul.d
+datacenter: dc1
+consul_data_dir: /opt/consul
+consul_logging_dir: /home/consul
+log_rotate_duration: "24h"
+log_rotate_bytes: 10485760
+log_rotate_max_files: 30
 # Consul Template variables. See https://github.com/hashicorp/consul-template
 enable_consul_template: true  # Should we provision Consul Template on this instance (boolean)
 consul_template_version: 0.29.1 # See https://releases.hashicorp.com/consul-template for details
 consul_template_zip_url: "{{ hashicorp_releases_url }}/consul-template/{{ consul_template_version }}/consul-template_{{ consul_template_version }}_linux_{{ arch[ansible_architecture] }}.zip" # noqa yaml[line-length]
-
+verify_incoming: true
+verify_outgoing: true
+verify_server_hostname: false
+recursor_dns:
+  - "1.1.1.1"
+server_ips: []
 # Vault variables.
 # Vault agent allows us to provide the consul secrets dynamically --
 # Consul gossip key and cluster certificates
