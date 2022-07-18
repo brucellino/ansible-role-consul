@@ -20,7 +20,7 @@ arch:
 # Consul is not optional
 consul_version: 1.12.3
 consul_zip_url: "{{ hashicorp_releases_url }}/consul/{{ consul_version }}/consul_{{ consul_version }}_linux_{{ arch[ansible_architecture] }}.zip" # noqa yaml[line-length]
-
+consul_config_dir: /etc/consul.d
 # Consul Template variables. See https://github.com/hashicorp/consul-template
 enable_consul_template: true  # Should we provision Consul Template on this instance (boolean)
 consul_template_version: 0.29.1 # See https://releases.hashicorp.com/consul-template for details

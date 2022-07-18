@@ -35,7 +35,7 @@
 
 - name: Deliver consul vault agent template
   ansible.builtin.copy:
-    dest: /etc/consul./consul.hcl.tmpl
+    dest: "{{ consul_config_dir }}/consul.hcl.tmpl"
     src: etc/consul.d/consul.hcl.tmpl
     backup: true
     mode: 0644
