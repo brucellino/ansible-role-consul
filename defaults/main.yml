@@ -35,3 +35,4 @@ vault_zip_url: "{{ hashicorp_releases_url }}/vault/{{ vault_version }}/vault_{{ 
 vault_agent_auto_auth_enabled: true
 # The default auto auth method for
 vault_agent_auto_auth_method: approle
+vault_agent_role: consul-secrets

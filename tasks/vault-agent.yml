@@ -22,3 +22,22 @@
     mode: 0644
     owner: root
     group: root
+
+- name: Deliver role id
+  ansible.builtin.copy:
+    dest: /etc/vault_roleid
+    content: "role_id"
+    backup: true
+    force: true
+    mode: 0644
+    owner: root
+    group: root
+
+- name: Deliver consul vault agent template
+  ansible.builtin.copy:
+    dest: /etc/consul./consul.hcl.tmpl
+    src: etc/consul.d/consul.hcl.tmpl
+    backup: true
+    mode: 0644
+    owner: root
+    group: root
