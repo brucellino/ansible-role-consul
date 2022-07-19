@@ -2,9 +2,9 @@
 Description="HashiCorp Consul - A service mesh solution"
 Documentation=https://www.consul.io/
 Requires=network-online.target
-After=network-online.target
+After=vault-agent.target
 ConditionFileNotEmpty={{ consul_config_dir }}/consul.hcl
-
+ConditionPathExists={{ consul_config_dir }}/
 [Service]
 Type=notify
 User=consul
