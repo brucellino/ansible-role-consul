@@ -22,3 +22,50 @@
     mode: 0644
     owner: root
     group: root
+
+- name: Deliver role id
+  ansible.builtin.copy:
+    dest: /etc/vault_roleid
+    content: "role_id"
+    backup: true
+    force: true
+    mode: 0644
+    owner: root
+    group: root
+
+- name: Deliver agent templates
+  ansible.builtin.template:
+    dest: "{{ consul_config_dir }}/{{ item }}.tmpl"
+    src: "etc/vault.d/{{ item }}.tmpl.j2"
+    backup: true
+    mode: 0644
+    owner: root
+    group: root
+    variable_start_string: "[["
+    variable_end_string: "]]"
+  loop: "{{ vault_agent_templates }}"
+
+- name: Systemd Unit
+  block:
+    - name: Template Vault Agent systemd unit
+      ansible.builtin.template:
+        src: etc/systemd/system/vault-agent.service.j2
+        dest: /etc/systemd/system/vault-agent.service
+        backup: true
+        mode: 0644
+        owner: root
+        group: root
+        # validate: systemd-analyze verify %s
+      notify: vault-agent-service
+
+    - name: Enable Vault Agent service
+      ansible.builtin.systemd:
+        name: vault-agent
+        state: started
+        enabled: true
+        masked: false
+        daemon_reload: true
+        daemon_reexec: true
+        scope: system
+        no_block: true
+  when: not contained.stat.exists

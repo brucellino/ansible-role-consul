@@ -1,7 +1,33 @@
+- name: 📦❓
+  ansible.builtin.stat:
+    path: /.dockerenv
+    get_checksum: false
+    get_mime: false
+    get_attributes: false
+  register: contained
+
 - name: Add prerequisites
   ansible.builtin.package:
     name: "{{ prerequisites[ansible_distribution_release] }}"
     state: present
+
+- name: Add Consul group
+  ansible.builtin.group:
+    name: consul
+    state: present
+    system: false
+
+- name: Add Consul user
+  ansible.builtin.user:
+    name: consul
+    comment: Consul user
+    group: consul
+    groups:
+      - consul
+    append: true
+    state: present
+    create_home: false
+    generate_ssh_key: false
 
 - name: "Get Consul {{ consul_version }}"
   ansible.builtin.unarchive:
@@ -28,3 +54,37 @@
     owner: root
     group: root
     unsafe_writes: false
+
+- name: Ensure config directory
+  ansible.builtin.file:
+    path: "{{ consul_config_dir }}"
+    state: directory
+    mode: 0777
+    owner: root
+    group: root
+
+- name: Consul systemd
+  block:
+    - name: Template systemd unit
+      ansible.builtin.template:
+        src: lib/systemd/system/consul.service.j2
+        dest: /lib/systemd/system/consul.service
+        backup: false
+        mode: 0644
+        owner: root
+        group: root
+        variable_end_string: "]]"
+        variable_start_string: "[["
+        # validate: systemd-analyze validate %s
+      notify: consul-service
+    - name: Consul service
+      ansible.builtin.systemd:
+        name: consul
+        state: started
+        enabled: true
+        masked: false
+        daemon_reload: true
+        daemon_reexec: true
+        scope: system
+        no_block: true
+  when: not contained.stat.exists
