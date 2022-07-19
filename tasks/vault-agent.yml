@@ -35,12 +35,14 @@
 
 - name: Deliver agent templates
   ansible.builtin.template:
-    dest: "{{ consul_config_dir }}/{{ item }}"
-    src: "etc/vault.d/{{ item }}.j2"
+    dest: "{{ consul_config_dir }}/{{ item }}.tmpl"
+    src: "etc/vault.d/{{ item }}.tmpl.j2"
     backup: true
     mode: 0644
     owner: root
     group: root
+    variable_start_string: "[["
+    variable_end_string: "]]"
   loop: "{{ vault_agent_templates }}"
 
 - name: Systemd Unit
@@ -66,4 +68,4 @@
         daemon_reexec: true
         scope: system
         no_block: true
-  when: contained.stat.exists
+  when: not contained.stat.exists

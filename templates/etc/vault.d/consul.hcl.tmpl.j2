@@ -1,30 +1,27 @@
-datacenter = "{{ datacenter }}"
-data_dir = "{{ consul_data_dir }}"
+datacenter = "[[ datacenter ]]"
+data_dir = "[[ consul_data_dir ]]"
 
-\{\{ with secret "hashiatho.me/consul/{{ datacenter }}" \}\}
-encrypt = "\{\{ .Data.data.gossip_key \}\}"
-\{\{ end \}\}
+{{ with secret "hashiatho.me/consul/[[ datacenter ]]" }}
+encrypt = "{{ .Data.data.gossip_key }}"
+{{ end }}
 
 # Logging
 ## Logging is defined at directory level
-log_file = "{{ consul_logging_dir }}"
-log_rotate_duration = "{{ log_rotate_duration }}"
-log_rotate_bytes = "{{ log_rotate_bytes }}"
-log_rotate_max_files = {{ log_rotate_max_files }}
+log_file = "[[ consul_logging_dir ]]"
+log_rotate_duration = "[[ log_rotate_duration ]]"
+log_rotate_bytes = "[[ log_rotate_bytes ]]"
+log_rotate_max_files = [[ log_rotate_max_files ]]
 
-ca_file = "{{ consul_config_dir }}/consul-agent-ca.pem"
-cert_file = "{{ consul_config_dir }}/dc1-server-consul-0.pem"
-key_file = "{{ consul_config_dir }}/dc1-server-consul-0-key.pem"
+ca_file = "[[ consul_config_dir ]]/consul-agent-ca.pem"
+cert_file = "[[ consul_config_dir ]]/[[ datacenter ]]-server-consul-0.pem"
+key_file = "[[ consul_config_dir ]]/[[ datacenter ]]-server-consul-0-key.pem"
 
-verify_incoming = {{ verify_incoming }}
-verify_outgoing = {{ verify_outgoing }}
-verify_server_hostname = {{ verify_server_hostname }}
+verify_incoming = [[ verify_incoming ]]
+verify_outgoing = [[ verify_outgoing ]]
+verify_server_hostname = [[ verify_server_hostname ]]
 
-recursors = [{%- for s in recursor_dns -%}"{{ s }}"{%- if not loop.last -%},{% endif %}{% endfor %}]
-bind_addr = "0.0.0.0"
-client_addr = "0.0.0.0"
-advertise_addr = "192.168.1.25"
-retry_join = [{%- for s in server_ips -%}"{{ s }}"{%- if not loop.last -%},{% endif %}{% endfor %}]
+recursors = [{%- for s in recursor_dns -%}"[[ s ]]"{%- if not loop.last -%},{% endif %}{% endfor %}]
+retry_join = [{%- for s in server_ips -%}"[[ s ]]"{%- if not loop.last -%},{% endif %}{% endfor %}]
 
 # Enable Consul ACLs
 acl = {

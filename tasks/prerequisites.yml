@@ -63,12 +63,28 @@
     owner: root
     group: root
 
-- name: Template systemd unit
-  ansible.builtin.template:
-    src: lib/systemd/system/consul.service.j2
-    dest: /lib/systemd/system/consul.service
-    backup: false
-    mode: 0644
-    owner: root
-    group: root
-    # validate: systemd-analyze validate %s
+- name: Consul systemd
+  block:
+    - name: Template systemd unit
+      ansible.builtin.template:
+        src: lib/systemd/system/consul.service.j2
+        dest: /lib/systemd/system/consul.service
+        backup: false
+        mode: 0644
+        owner: root
+        group: root
+        variable_end_string: "]]"
+        variable_start_string: "[["
+        # validate: systemd-analyze validate %s
+      notify: consul-service
+    - name: Consul service
+      ansible.builtin.systemd:
+        name: consul
+        state: started
+        enabled: true
+        masked: false
+        daemon_reload: true
+        daemon_reexec: true
+        scope: system
+        no_block: true
+  when: not contained.stat.exists

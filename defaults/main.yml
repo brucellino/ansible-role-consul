@@ -49,4 +49,5 @@ vault_agent_auto_auth_enabled: true
 vault_agent_auto_auth_method: approle
 vault_agent_role: consul-secrets
 vault_agent_templates:
-  - consul.hcl.tmpl
+  - consul.hcl
+  - consul-agent-ca.pem
