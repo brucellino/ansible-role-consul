@@ -42,3 +42,28 @@
     owner: root
     group: root
   loop: "{{ vault_agent_templates }}"
+
+- name: Systemd Unit
+  block:
+    - name: Template Vault Agent systemd unit
+      ansible.builtin.template:
+        src: etc/systemd/system/vault-agent.service.j2
+        dest: /etc/systemd/system/vault-agent.service
+        backup: true
+        mode: 0644
+        owner: root
+        group: root
+        validate: systemd-analyze verify %s
+      notify: vault-agent-service
+
+    - name: Enable Vault Agent service
+      ansible.builtin.systemd:
+        name: vault-agent
+        state: started
+        enabled: true
+        masked: false
+        daemon_reload: true
+        daemon_reexec: true
+        scope: system
+        no_block: true
+  when: contained.stat.exists
