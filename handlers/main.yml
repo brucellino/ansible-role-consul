@@ -10,3 +10,14 @@
     daemon_reexec: true
     scope: system
     no_block: true
+
+- name: consul-service
+  ansible.builtin.systemd:
+    name: consul
+    state: restarted
+    enabled: true
+    masked: false
+    daemon_reload: true
+    daemon_reexec: true
+    scope: system
+    no_block: true
