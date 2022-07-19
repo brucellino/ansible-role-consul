@@ -41,3 +41,4 @@
     mode: 0644
     owner: root
     group: root
+  loop: "{{ vault_agent_templates }}"

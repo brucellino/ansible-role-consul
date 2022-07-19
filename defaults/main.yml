@@ -48,3 +48,5 @@ vault_agent_auto_auth_enabled: true
 # The default auto auth method for
 vault_agent_auto_auth_method: approle
 vault_agent_role: consul-secrets
+vault_agent_templates:
+  - consul.hcl.tmpl
