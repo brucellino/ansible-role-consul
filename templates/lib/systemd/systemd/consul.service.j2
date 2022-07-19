@@ -1,0 +1,24 @@
+[Unit]
+Description="HashiCorp Consul - A service mesh solution"
+Documentation=https://www.consul.io/
+Requires=network-online.target
+After=network-online.target
+ConditionFileNotEmpty={{ consul_config_dir }}/consul.hcl
+
+[Service]
+Type=notify
+User=consul
+Group=consul
+ExecStart=/bin/consul agent \
+  -dns-port 53 \
+  -config-dir={{ consul_config_dir }}
+ExecReload=/bin/kill --signal HUP $MAINPID
+KillMode=process
+KillSignal=SIGTERM
+Restart=on-failure
+LimitNOFILE=65536
+StandardOutput=append:/var/log/consul.log
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+
+[Install]
+WantedBy=multi-user.target

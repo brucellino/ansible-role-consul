@@ -62,3 +62,13 @@
     mode: 0777
     owner: root
     group: root
+
+- name: Template systemd unit
+  ansible.builtin.template:
+    src: lib/systemd/system/consul.service.j2
+    dest: /lib/systemd/system/consul.service
+    backup: false
+    mode: 0644
+    owner: root
+    group: root
+    # validate: systemd-analyze validate %s
