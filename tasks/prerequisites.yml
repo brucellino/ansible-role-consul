@@ -1,3 +1,11 @@
+- name: 📦❓
+  ansible.builtin.stat:
+    path: /.dockerenv
+    get_checksum: false
+    get_mime: false
+    get_attributes: false
+  register: contained
+
 - name: Add prerequisites
   ansible.builtin.package:
     name: "{{ prerequisites[ansible_distribution_release] }}"
