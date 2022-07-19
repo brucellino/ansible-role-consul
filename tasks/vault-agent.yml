@@ -53,7 +53,7 @@
         mode: 0644
         owner: root
         group: root
-        validate: systemd-analyze verify %s
+        # validate: systemd-analyze verify %s
       notify: vault-agent-service
 
     - name: Enable Vault Agent service
