@@ -1,4 +1,16 @@
 ---
 # tasks file for ansible-role-template
+- name: 📦❓
+  ansible.builtin.stat:
+    path: /.dockerenv
+    get_checksum: false
+    get_mime: false
+    get_attributes: false
+  register: contained
+
 - include_tasks: prerequisites.yml
 - include_tasks: vault-agent.yml
+- include_tasks: launch-contained.yml
+  when: contained.stat.exists
+- include_tasks: launch-systemd.yml
+  when: not contained.stat.exists

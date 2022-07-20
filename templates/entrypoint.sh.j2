@@ -1,0 +1,15 @@
+#!/usr/bin/dumb-init /bin/sh
+set -e
+
+# start  vault agent
+# export VAULT_ADDR=?
+vault agent -config /etc/vault.d/vault.hcl &
+
+# start consul
+/bin/consul agent \
+  -dns-port [[ dns_port ]] \
+  -config-dir=[[ consul_config_dir ]]
+  -auto-reload-config \
+  -client "0.0.0.0" \
+  -bind "0.0.0.0" \
+  -advertise '{{ GetAllInterfaces | include "network" "[[ internal_network_cidr ]]" | attr "address" }}'
