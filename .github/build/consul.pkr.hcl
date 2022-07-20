@@ -23,7 +23,7 @@ variable "docker_password" {
 }
 
 locals {
-  docker_registry = "ghcr.io/brucellino"
+  docker_registry = "ghcr.io/brucellino/ansible-role-consul"
 }
 
 variable "tag_version" {
