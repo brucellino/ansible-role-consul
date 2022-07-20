@@ -59,8 +59,9 @@ jobs:
     strategy:
       matrix:
         target:
-          - "docker-ubuntu.docker.ubuntu-amd64"
-          - "docker-ubuntu.docker.ubuntu-arm64"
+          - "consul.docker.ubuntu-amd64"
+          - "consul.docker.ubuntu-arm64"
+          - "consul.arm.raspi-os-64"
     steps:
       - name: Checkout
         uses: actions/checkout@v2

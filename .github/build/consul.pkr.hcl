@@ -111,7 +111,7 @@ source "docker" "ubuntu-amd64" {
 }
 
 build {
-  name = "docker-ubuntu"
+  name = "consul"
   sources = [
     "source.docker.ubuntu-arm64",
     "source.docker.ubuntu-amd64",
