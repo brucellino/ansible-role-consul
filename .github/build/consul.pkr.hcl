@@ -42,7 +42,7 @@ variable "raspi_image_size" {
   default     = "10GB"
 }
 
-source "arm" "raspi-os" {
+source "arm" "raspi-os-64" {
   file_urls             = ["https://downloads.raspberrypi.org/raspios_arm64/images/raspios_arm64-2022-04-07/2022-04-04-raspios-bullseye-arm64.img.xz"]
   file_checksum_url     = "https://downloads.raspberrypi.org/raspios_arm64/images/raspios_arm64-2022-04-07/2022-04-04-raspios-bullseye-arm64.img.xz.sha256"
   file_checksum_type    = "sha256"
@@ -114,7 +114,8 @@ build {
   name = "docker-ubuntu"
   sources = [
     "source.docker.ubuntu-arm64",
-    "source.docker.ubuntu-amd64"
+    "source.docker.ubuntu-amd64",
+    "source.arm.raspi-os-64"
   ]
 
   provisioner "ansible" {
