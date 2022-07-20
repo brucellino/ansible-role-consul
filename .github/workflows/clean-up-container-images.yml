@@ -10,6 +10,10 @@ on:
         description: 'Pull Request number'
         required: true
         type: string
+      repo:
+        description: 'repo path'
+        required: true
+        type: string
 
 jobs:
   delete_pr_image:
@@ -31,6 +35,6 @@ jobs:
         uses: bots-house/ghcr-delete-image-action@v1.0.1
         with:
           owner: brucellino
-          name: ansible-role-consul/consul-ubuntu-arm64
+          name: ${{ inputs.repo }}
           tag: pr-${{ inputs.pr }}
           token: ${{ github.token }}
