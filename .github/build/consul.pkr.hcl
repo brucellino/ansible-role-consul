@@ -8,7 +8,6 @@ packer {
       source  = "github.com/hashicorp/docker"
       version = "v1.0.5"
     }
-    required_plugins {
     arm = {
       source = "github.com/cdecoux/builder-arm"
       version = "1.0.0"
@@ -36,6 +35,45 @@ variable "tag_version" {
   sensitive = false
   default   = "latest"
 }
+
+variable "raspi_image_size" {
+  description = "Size of the raspberry pi disk image"
+  type = string
+  default = "10GB"
+}
+
+source "arm" "raspi-os" {
+  file_urls = ["https://downloads.raspberrypi.org/raspios_arm64/images/raspios_arm64-2022-04-07/2022-04-04-raspios-bullseye-arm64.img.xz"]
+  file_checksum_url = "https://downloads.raspberrypi.org/raspios_arm64/images/raspios_arm64-2022-04-07/2022-04-04-raspios-bullseye-arm64.img.xz.sha256"
+  file_checksum_type = "sha256"
+  file_target_extension = "xz"
+  file_unarchive_cmd = ["xz", "--decompress", "$ARCHIVE_PATH"]
+  image_build_method = "reuse"
+  image_path = "raspios-bullseye.img"
+  image_size = var.raspi_image_size
+  image_type = "dos"
+  image_partitions {
+    name = "boot"
+    type = "c"
+    start_sector = "2048"
+    filesystem = "fat"
+    size = "256M"
+    mountpoint = "/boot/firmware"
+  }
+  image_partitions {
+    name = "root"
+    type = "83"
+    start_sector = "526336"
+    filesystem = "ext4"
+    size = "0"
+    mountpoint = "/"
+  }
+
+  image_chroot_env = ["PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin"]
+  qemu_binary_source_path = "/usr/bin/qemu-aarch64-static"
+  qemu_binary_destination_path = "/usr/bin/qemu-aarch64-static"
+}
+
 
 source "docker" "ubuntu-arm64" {
   image     = "arm64v8/ubuntu:focal"
