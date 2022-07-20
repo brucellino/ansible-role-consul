@@ -28,7 +28,6 @@ jobs:
           tag: pr-${{ github.event.pull_request.number }}
           token: ${{ github.token }}
   delete_pr_image_manual:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: GHCR Delete Image
