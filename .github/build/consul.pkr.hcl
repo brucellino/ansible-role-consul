@@ -39,7 +39,9 @@ source "docker" "ubuntu-arm64" {
   changes = [
     "USER root",
     "LABEL VERSION=latest",
-    "LABEL org.opencontainers.image.source https://github.com/brucellino/ansible-role-consul"
+    "LABEL org.opencontainers.image.source https://github.com/brucellino/ansible-role-consul",
+    "ENTRYPOINT /entrypoint.sh"
+
   ]
   run_command = [
     "-d", "-i", "-t", "--entrypoint=/bin/bash",
@@ -55,7 +57,8 @@ source "docker" "ubuntu-amd64" {
   changes = [
     "USER root",
     "LABEL VERSION=latest",
-    "LABEL org.opencontainers.image.source https://github.com/brucellino/ansible-role-consul"
+    "LABEL org.opencontainers.image.source https://github.com/brucellino/ansible-role-consul",
+    "ENTRYPOINT /entrypoint.sh"
   ]
   run_command = [
     "-d", "-i", "-t", "--entrypoint=/bin/bash",
