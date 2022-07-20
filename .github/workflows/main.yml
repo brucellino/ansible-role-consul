@@ -91,7 +91,7 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         run: |
           export run_as
-          if [[ "${matrix.target}" -eq "consul.arm.raspi-os-64" ]] ; then
+          if [[ "${{ matrix.target }}" -eq "consul.arm.raspi-os-64" ]] ; then
             run_as="sudo -E"
           else
             run_as=""
