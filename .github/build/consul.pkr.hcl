@@ -127,6 +127,13 @@ build {
       "ANSIBLE_NOCOLOR=True",
       "ANSIBLE_ROLES_PATH=${var.roles_path}"
     ]
+    extra_arguments = ["-vvvv"]
+    only = ["docker.ubuntu-arm64", "docker.ubuntu-amd64"]
+  }
+
+  provisioner "shell" {
+    inline = ["hostname"]
+    only = ["arm.raspi-os-64"]
   }
 
   post-processors {
@@ -135,6 +142,7 @@ build {
       inline = [
         "curl -Lf https://github.com/aquasecurity/trivy/releases/download/v0.30.0/trivy_0.30.0_Linux-64bit.tar.gz | tar xz trivy"
       ]
+      only = ["docker.ubuntu-arm64", "docker.ubuntu-amd64"]
     }
 
     post-processor "docker-tag" {
@@ -166,6 +174,7 @@ build {
       login_server   = "https://ghcr.io"
       login_username = "brucellino"
       login_password = var.docker_password
+      only = ["docker.ubuntu-arm64", "docker.ubuntu-amd64"]
     }
   }
 }
