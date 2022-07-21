@@ -52,6 +52,7 @@ source "arm" "raspi-os-64" {
   image_path            = "raspios-bullseye.img"
   image_size            = var.raspi_image_size
   image_type            = "dos"
+  image_mount_path = "/tmp/rpi_chroot"
   image_partitions {
     name         = "boot"
     type         = "c"
@@ -133,6 +134,22 @@ build {
 
   provisioner "shell" {
     inline = ["hostname"]
+    only = ["arm.raspi-os-64"]
+  }
+
+  provisioner "ansible" {
+    inventory_file_template = "default ansible_host=/tmp/rpi_chroot ansible_connection=chroot"
+    extra_arguments = [
+      "--connection=chroot"
+    ]
+    playbook_file = "playbook.yml"
+    groups        = ["all"]
+    ansible_env_vars = [
+      "ANSIBLE_HOST_KEY_CHECKING=False",
+      "ANSIBLE_SSH_ARGS='-o ForwardAgent=yes -o ControlMaster=auto -o ControlPersist=60s'",
+      "ANSIBLE_NOCOLOR=True",
+      "ANSIBLE_ROLES_PATH=${var.roles_path}"
+    ]
     only = ["arm.raspi-os-64"]
   }
 
