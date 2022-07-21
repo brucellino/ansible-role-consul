@@ -3,6 +3,7 @@
   ansible.builtin.hostname:
     name: "{{ host_name }}"
     use: "{{ ansible_os_family | lower }}"
+  ignore_errors: true
 
 - name: Template WPA Supplicant configuration
   ansible.builtin.template:
