@@ -3,7 +3,6 @@
 - name: Remove pi user
   ansible.builtin.user:
     name: pi
-    uid: 1000
     state: absent
 
 - name: Remove pi sudoer file
@@ -14,7 +13,6 @@
 - name: "Add user {{ default_username }}"
   ansible.builtin.user:
     name: "{{ default_username }}"
-    uid: 1000
     comment: "Default user added by Ansible"
     shell: /bin/bash
     state: present
