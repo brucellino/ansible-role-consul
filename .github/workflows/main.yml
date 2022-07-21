@@ -92,7 +92,7 @@ jobs:
         run: |
           export run_as
           if [[ "${{ matrix.target }}" == "consul.arm.raspi-os-64" ]]; then
-            run_as="sudo -E"
+            run_as="sudo -E env PATH=${PATH}"
           else
             run_as=""
           fi
