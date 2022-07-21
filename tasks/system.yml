@@ -1,0 +1,40 @@
+---
+- name: Set hostname
+  ansible.builtin.hostname:
+    name: "{{ host_name }}"
+    use: "{{ ansible_os_family | lower }}"
+
+- name: Template WPA Supplicant configuration
+  ansible.builtin.template:
+    src: etc/wpa_supplicant/wpa_supplicant
+    dest: /etc/wpa_supplicant/wpa_supplicant
+    mode: 0644
+    owner: root
+    group: root
+
+- name: Set timezone
+  ansible.builtin.timezone:
+    name: "{{ timezone }}"
+    hwclock: local
+
+- name: Unblock rfkill
+  ansible.builtin.command: rfkill unblock wifi
+  changed_when: false
+
+- name: Get all wlan rfkill configs
+  ansible.builtin.find:
+    paths: /var/lib/systemd/rfkill/
+    patterns: "*wlan"
+    file_type: file
+    recurse: false
+  register: wlan_rfkill_files
+
+- name: Disable wlan rfkill
+  ansible.builtin.copy:
+    dest: "{{ item.path }}"
+    content: 0
+    force: true
+    mode: 0644
+    owner: root
+    group: root
+  loop: wlan_rfkill_files.files
