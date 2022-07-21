@@ -1,0 +1,9 @@
+country={{ country_code }}
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+ap_scan=1
+
+update_config=1
+network={
+	ssid="{{ wifi_network_name }}"
+	psk={{ wifi_psk }}
+}
