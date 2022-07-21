@@ -14,7 +14,7 @@ This role provisions:
 
 1. Consul itself, agent and server mode
 2. Other necessary tools (`consul-template`, `vault`)
-3. Consul TLS and gossip secrets  read from Vault
+3. Consul TLS and gossip secrets read from Vault
 
 ## Requirements
 
@@ -24,6 +24,7 @@ good idea to mention in this section that the boto package is required. -->
 This role requires a working Vault instance with TLS secrets and gossip keys in a given path.
 
 This role can be applied to virtual machines, physical machines and docker containers.
+
 Support for OCI containers will come as soon as I can figure out a reliable way of detecting whether we are in an arbitrary kind of container.
 <!--
 
@@ -39,7 +40,7 @@ that can/should be set via parameters to the role. Any variables that are read
 from other roles and/or the global scope (ie. hostvars, group vars, etc.) should
 be mentioned here as well. -->
 
-See [`defaults/main.yml`](defaults/main.yml) for default variables
+See [`defaults/main.yml`](defaults/main.yml) for default variables.
 
 ## Dependencies
 

@@ -59,8 +59,9 @@ jobs:
     strategy:
       matrix:
         target:
-          - "docker-ubuntu.docker.ubuntu-amd64"
-          - "docker-ubuntu.docker.ubuntu-arm64"
+          - "consul.docker.ubuntu-amd64"
+          - "consul.docker.ubuntu-arm64"
+          - "consul.arm.raspi-os-64"
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -89,7 +90,13 @@ jobs:
         shell: 'script -q -e -c "bash {0}"'
         if: ${{ github.event_name == 'pull_request' }}
         run: |
-          ./packer build \
+          export run_as
+          if [[ "${{ matrix.target }}" == "consul.arm.raspi-os-64" ]]; then
+            run_as="sudo -E env PATH=${PATH}"
+          else
+            run_as=""
+          fi
+          eval "$run_as" ./packer build \
             -var roles_path="${GITHUB_WORKSPACE}/../" \
             -var docker_password=${{ secrets.GITHUB_TOKEN }} \
             -var tag_version="pr-${{ github.event.pull_request.number }}" \
@@ -99,7 +106,13 @@ jobs:
         shell: 'script -q -e -c "bash {0}"'
         if: ${{ github.ref_name == 'main' }}
         run: |
-          ./packer build \
+          export run_as
+          if [[ "${matrix.target}" -eq "consul.arm.raspi-os-64" ]] ; then
+            run_as="sudo"
+          else
+            run_as=""
+          fi
+          eval "$run_as" ./packer build \
             -var roles_path="${GITHUB_WORKSPACE}/../" \
             -var docker_password=${{ secrets.GITHUB_TOKEN }} \
             -var tag_version="latest" \

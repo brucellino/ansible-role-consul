@@ -3,15 +3,20 @@
   hosts: pis
   gather_facts: false
   tasks:
+    - name: Update APT
+      ansible.builtin.raw: DEBIAN_FRONTEND=noninteractive apt-get update
+      changed_when: false
     - name: Prep
       ansible.builtin.raw: |
-        apt-get update && \
         DEBIAN_FRONTEND=noninteractive \
-        apt-get install -y python3 software-properties-common sudo
+        apt-get install -y \
+          python3 \
+          software-properties-common \
+          sudo
       changed_when: false
 
 - name: Consul
-  hosts: pis
+  hosts: all
   become: true
   roles:
     - ansible-role-consul

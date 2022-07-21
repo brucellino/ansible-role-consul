@@ -8,7 +8,13 @@ prerequisites:
     - jq
     - tmux
     - unzip
-
+  bullseye:
+    - curl
+    - gnupg
+    - gzip
+    - jq
+    - tmux
+    - unzip
 hashicorp_releases_url: https://releases.hashicorp.com
 
 arch:
