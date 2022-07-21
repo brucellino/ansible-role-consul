@@ -52,7 +52,7 @@ source "arm" "raspi-os-64" {
   image_path            = "raspios-bullseye.img"
   image_size            = var.raspi_image_size
   image_type            = "dos"
-  image_mount_path = "/tmp/rpi_chroot"
+  image_mount_path = "/tmp/rpi_chroot/"
   image_partitions {
     name         = "boot"
     type         = "c"
@@ -128,13 +128,7 @@ build {
       "ANSIBLE_NOCOLOR=True",
       "ANSIBLE_ROLES_PATH=${var.roles_path}"
     ]
-    extra_arguments = ["-vvvv"]
     only = ["docker.ubuntu-arm64", "docker.ubuntu-amd64"]
-  }
-
-  provisioner "shell" {
-    inline = ["hostname"]
-    only = ["arm.raspi-os-64"]
   }
 
   provisioner "ansible" {
