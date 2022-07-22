@@ -102,6 +102,15 @@ jobs:
             -var tag_version="pr-${{ github.event.pull_request.number }}" \
             -only=${{ matrix.target }} \
             consul.pkr.hcl
+      - name: Compress artifact
+        if: ${{ matrix.target == "consul.arm.raspi-os-64" }}
+        run: sudo apt-get install -y xz-utils ; xz -T 9 --compress raspios-bullseye.img
+      - name: Upload artifact
+        if: ${{ matrix.target == "consul.arm.raspi-os-64" }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: raspi-os-64
+          path: raspios-bullseye.img.xz
       - name: Build Image
         shell: 'script -q -e -c "bash {0}"'
         if: ${{ github.ref_name == 'main' }}
@@ -118,6 +127,15 @@ jobs:
             -var tag_version="latest" \
             -only=${{ matrix.target }} \
             consul.pkr.hcl
+      - name: Compress artifact
+        if: ${{ matrix.target == "consul.arm.raspi-os-64" }}
+        run: sudo apt-get install -y xz-utils ; xz -T 9 --compress raspios-bullseye.img
+      - name: Upload artifact
+        if: ${{ matrix.target == "consul.arm.raspi-os-64" }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: raspi-os-64
+          path: raspios-bullseye.img.xz
   test-pr:
     needs:
       - build
@@ -225,6 +243,11 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+      - name: Get os image
+        uses: actions/download-artifact@v3
+        with:
+          name: raspi-os-64
+
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
