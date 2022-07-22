@@ -16,6 +16,8 @@ This role provisions:
 2. Other necessary tools (`consul-template`, `vault`)
 3. Consul TLS and gossip secrets read from Vault
 
+There is experimental support for joining wifi networks.
+
 ## Requirements
 
 <!-- Any pre-requisites that may not be covered by Ansible itself or the role should

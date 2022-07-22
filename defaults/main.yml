@@ -72,4 +72,5 @@ default_user_group: "{{ default_username }}"
 ssh_key_url: http://github.com/brucellino.keys
 wifi_network_name: wifi_network
 wifi_psk: 12345
+country_code: "IT"
 timezone: "Europe/Rome"
