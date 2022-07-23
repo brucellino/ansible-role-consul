@@ -119,10 +119,10 @@ jobs:
             -only=${{ matrix.target }} \
             consul.pkr.hcl
       - name: Compress artifact
-        if: ${{ matrix.target }} == "consul.arm.raspi-os-64"
-        run: sudo apt-get install -y xz-utils ; xz -T 9 --compress raspios-bullseye.img
+        if: ${{ matrix.target == 'consul.arm.raspi-os-64' }}
+        run: xz -T 9 --compress raspios-bullseye.img
       - name: Upload artifact
-        if: ${{ matrix.target }} == "consul.arm.raspi-os-64"
+        if: ${{ matrix.target == 'consul.arm.raspi-os-64' }}
         uses: actions/upload-artifact@v3
         with:
           name: raspi-os-64
