@@ -62,3 +62,15 @@ vault_agent_role: consul-secrets
 vault_agent_templates:
   - consul.hcl
   - consul-agent-ca.pem
+
+# Other variables
+set_host_name: true
+host_name: raspberry-pi
+add_default_user: true
+default_username: becker
+default_user_group: "{{ default_username }}"
+ssh_key_url: http://github.com/brucellino.keys
+wifi_network_name: wifi_network
+wifi_psk: 12345
+country_code: "IT"
+timezone: "Europe/Rome"

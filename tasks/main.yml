@@ -9,6 +9,10 @@
   register: contained
 
 - include_tasks: prerequisites.yml
+- include_tasks: user.yml
+  when: add_default_user | bool
+- include_tasks: system.yml
+  when: not contained.stat.exists
 - include_tasks: vault-agent.yml
 - include_tasks: launch-contained.yml
   when: contained.stat.exists

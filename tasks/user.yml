@@ -1,0 +1,51 @@
+---
+# tasks/user.yml
+- name: Remove pi user
+  ansible.builtin.user:
+    name: pi
+    state: absent
+
+- name: Remove pi sudoer file
+  ansible.builtin.file:
+    path: /etc/sudoers.d/010_pi-nopasswd
+    state: absent
+
+- name: "Add user {{ default_username }}"
+  ansible.builtin.user:
+    name: "{{ default_username }}"
+    comment: "Default user added by Ansible"
+    shell: /bin/bash
+    state: present
+    create_home: true
+    generate_ssh_key: false
+  register: new_user
+
+- name: "Ensure {{ default_user }} has sudo"
+  ansible.builtin.copy:
+    dest: "/etc/sudoers.d/010-{{ default_username }}-nopasswd"
+    content: "{{ default_username }} ALL=(ALL) NOPASSWD: ALL" # pragma: allowlist secret
+    backup: true
+    force: true
+    mode: 0440
+    owner: root
+    group: root
+    # validate:
+
+- name: "Add ssh configuration dir"
+  ansible.builtin.file:
+    path: "{{ new_user.home }}/.ssh"
+    state: directory
+    mode: 0700
+    owner: "{{ new_user.name }}"
+    group: "{{ new_user.group }}"
+
+- name: Add ssh public key
+  ansible.builtin.authorized_key:
+    user: "{{ new_user.name }}"
+    key: "{{ ssh_key_url }}"
+    path: "{{ new_user.home }}/.ssh/authorized_keys"
+    manage_dir: false
+    state: present
+    exclusive: false
+    validate_certs: true
+    comment: "Added by Ansible"
