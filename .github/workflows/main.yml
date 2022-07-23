@@ -126,7 +126,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: raspi-os-64
-          path: raspios-bullseye.img.xz
+          path: .github/built/raspios-bullseye.img.xz
   test-pr:
     needs:
       - build
