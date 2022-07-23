@@ -53,7 +53,8 @@ No dependencies on other roles.
 
 ## Example Playbook
 
-For an example playbook see `.github/build/playbook.yml`
+For an example playbook see `.github/build/playbook.yml`.
+An example Packer template which builds the images is in `.github/build/consul.pkr.hcl`.
 
 ## License
 
@@ -63,4 +64,4 @@ MIT
 
 <!-- An optional section for the role authors to include contact information, or a
 website (HTML is not allowed). -->
-@brucellino <bruce.becker@proton.me>
+@brucellino <brucellino@proton.me>
