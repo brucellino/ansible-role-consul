@@ -120,7 +120,7 @@ jobs:
             consul.pkr.hcl
       - name: Compress artifact
         if: ${{ matrix.target == 'consul.arm.raspi-os-64' }}
-        run: xz -T 9 --compress raspios-bullseye.img
+        run: sudo xz -T 9 --compress raspios-bullseye.img
       - name: Upload artifact
         if: ${{ matrix.target == 'consul.arm.raspi-os-64' }}
         uses: actions/upload-artifact@v3
