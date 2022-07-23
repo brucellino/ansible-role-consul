@@ -8,4 +8,5 @@ plugins:
       assets:
         - CHANGELOG.md
         - README.md
+        - .github/build/raspios-bullseye.img.xz
   - '@semantic-release/github'
