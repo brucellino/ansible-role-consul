@@ -30,7 +30,7 @@
     list_files: false
     remote_src: true
     validate_certs: true
-    mode: 0777
+    mode: 0755
     owner: root
     group: root
     unsafe_writes: false
