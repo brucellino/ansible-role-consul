@@ -9,7 +9,7 @@ repos:
     - id: check-yaml
     - id: check-added-large-files
   - repo: https://github.com/ansible-community/ansible-lint
-    rev: v6.5.2
+    rev: v6.6.0
     hooks:
     - id: ansible-lint
       always_run: false
@@ -30,7 +30,7 @@ repos:
         stages: [commit-msg]
         additional_dependencies: ['@commitlint/config-conventional']
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.18.2
+    rev: 0.18.3
     hooks:
       - id: check-github-workflows
 ci:
