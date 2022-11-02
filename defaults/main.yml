@@ -8,6 +8,7 @@ prerequisites:
     - jq
     - tmux
     - unzip
+    - vim
   bullseye:
     - curl
     - gnupg
@@ -15,6 +16,7 @@ prerequisites:
     - jq
     - tmux
     - unzip
+    - vim
 hashicorp_releases_url: https://releases.hashicorp.com
 
 arch:
