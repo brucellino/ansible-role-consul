@@ -13,6 +13,7 @@
     variable_start_string: "[["
     # validate: systemd-analyze validate %s
   notify: consul-service
+
 - name: Consul service
   ansible.builtin.systemd:
     name: consul
