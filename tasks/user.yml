@@ -20,7 +20,7 @@
     generate_ssh_key: false
   register: new_user
 
-- name: "Ensure {{ default_user }} has sudo"
+- name: "Ensure sudo for {{ default_user }}"
   ansible.builtin.copy:
     dest: "/etc/sudoers.d/010-{{ default_username }}-nopasswd"
     content: "{{ default_username }} ALL=(ALL) NOPASSWD: ALL" # pragma: allowlist secret

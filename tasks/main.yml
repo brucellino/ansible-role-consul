@@ -8,13 +8,19 @@
     get_attributes: false
   register: contained
 
-- include_tasks: prerequisites.yml
-- include_tasks: user.yml
+- name: Prerequisites
+  ansible.builtin.include_tasks: prerequisites.yml
+- name: User
+  ansible.builtin.include_tasks: user.yml
   when: add_default_user | bool
-- include_tasks: system.yml
+- name: System
+  ansible.builtin.include_tasks: system.yml
   when: not contained.stat.exists
-- include_tasks: vault-agent.yml
-- include_tasks: launch-contained.yml
+- name: Vault Agent
+  ansible.builtin.include_tasks: vault-agent.yml
+- name: Launch in Container
+  ansible.builtin.include_tasks: launch-contained.yml
   when: contained.stat.exists
-- include_tasks: launch-systemd.yml
+- name: Launch with Systemd
+  ansible.builtin.include_tasks: launch-systemd.yml
   when: not contained.stat.exists

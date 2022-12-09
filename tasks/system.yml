@@ -3,7 +3,6 @@
   ansible.builtin.hostname:
     name: "{{ host_name }}"
     use: "{{ ansible_os_family | lower }}"
-  ignore_errors: true
 
 - name: Template WPA Supplicant configuration
   ansible.builtin.template:
@@ -14,10 +13,9 @@
     group: root
 
 - name: Set timezone
-  ansible.builtin.timezone:
+  community.general.timezone:
     name: "{{ timezone }}"
     hwclock: local
-  ignore_errors: true
 
 - name: Unblock rfkill
   ansible.builtin.command: rfkill unblock wifi

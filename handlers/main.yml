@@ -1,6 +1,6 @@
 ---
 # handlers file for ansible-role-template
-- name: vault-agent-service
+- name: Vault Agent service
   ansible.builtin.systemd:
     name: vault-agent
     state: restarted
@@ -11,7 +11,7 @@
     scope: system
     no_block: true
 
-- name: consul-service
+- name: Consul
   ansible.builtin.systemd:
     name: consul
     state: restarted
