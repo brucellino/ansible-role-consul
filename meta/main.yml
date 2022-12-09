@@ -1,5 +1,6 @@
 galaxy_info:
-  role_name: template
+  role_name: consul
+  namespace: brucellino
   author: Bruce Becker
   description: Ansible role template
   company: HaH
