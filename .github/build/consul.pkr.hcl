@@ -151,7 +151,7 @@ build {
     # Get Trivy
     post-processor "shell-local" {
       inline = [
-        "curl -Lf https://github.com/aquasecurity/trivy/releases/download/v0.30.0/trivy_0.30.0_Linux-64bit.tar.gz | tar xz trivy"
+        "curl -Lf https://github.com/aquasecurity/trivy/releases/download/v0.35.0/trivy_0.35.0_Linux-64bit.tar.gz | tar xz trivy"
       ]
       only = ["docker.ubuntu-arm64", "docker.ubuntu-amd64"]
     }

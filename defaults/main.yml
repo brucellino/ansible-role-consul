@@ -26,7 +26,7 @@ arch:
 
 # Consul version and zipfile url values. These are used to obtain the Consul binaries
 # Consul is not optional
-consul_version: 1.12.3
+consul_version: 1.14.2
 consul_zip_url: "{{ hashicorp_releases_url }}/consul/{{ consul_version }}/consul_{{ consul_version }}_linux_{{ arch[ansible_architecture] }}.zip" # noqa yaml[line-length]
 # Configuration defaults
 consul_config_dir: /etc/consul.d
