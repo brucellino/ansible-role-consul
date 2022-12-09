@@ -81,7 +81,7 @@ jobs:
         run: sudo -H pip3 install ansible
       - name: Get Packer
         run: |
-          curl -fL https://releases.hashicorp.com/packer/1.8.2/packer_1.8.2_linux_amd64.zip | gunzip ->packer && \
+          curl -fL https://releases.hashicorp.com/packer/1.8.4/packer_1.8.4_linux_amd64.zip | gunzip ->packer && \
           chmod u+x packer && \
           ./packer -version
       - name: Init Packer
