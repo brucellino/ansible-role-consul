@@ -11,13 +11,6 @@
     scope: system
     no_block: true
 
-- name: Consul
-  ansible.builtin.systemd:
-    name: consul
-    state: restarted
-    enabled: true
-    masked: false
-    daemon_reload: true
-    daemon_reexec: true
-    scope: system
-    no_block: true
+- name: reload consul
+  ansible.builtin.command:
+    cmd: consul reload
