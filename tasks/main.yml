@@ -15,8 +15,8 @@
     state: present
 
 - name: Lookup secrets
-  ansible.builtin.set_fact:
-    secrets: "{{ lookup('hashi_vault', 'secret=kv/data/hashiathome validate_certs=false') }}"  # pragma: allowlist secret noqa: jinja[invalid]
+  ansible.builtin.set_fact: # noqa: jinja[invalid]
+    secrets: "{{ lookup('hashi_vault', 'secret=kv/data/hashiathome validate_certs=false') }}"  # pragma: allowlist secret
 
 - name: Install
   ansible.builtin.include_tasks: install.yml
@@ -36,9 +36,6 @@
 
 - name: Configure
   ansible.builtin.include_tasks: configure.yml
-
-- name: Watches
-  ansible.builtin.include_tasks: watches.yml
 
 - name: Resolve conf
   ansible.builtin.include_tasks: resolveconf.yml

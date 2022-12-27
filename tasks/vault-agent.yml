@@ -39,7 +39,7 @@
 - name: Deliver role id
   ansible.builtin.copy:
     dest: "{{ vault_agent_config_dir }}/vault_roleid"
-    content: "d358eac9-a3bd-d268-d79e-2eba8bd19b52"
+    content: role_id.content.data.role_id
     backup: true
     force: true
     mode: 0644

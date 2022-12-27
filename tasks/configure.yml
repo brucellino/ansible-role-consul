@@ -25,6 +25,14 @@
     variable_end_string: "]]"
     # validate: consul validate %s
 
+- name: Deliver Consul watches configuration
+  ansible.builtin.copy:
+    dest: "{{ consul_config_dir }}/watches.hcl"
+    src: etc/consul.d/watches.hcl
+    mode: 0644
+    owner: consul
+    group: consul
+
 - name: Ensure not server when not server
   ansible.builtin.file:
     path: "{{ consul_config_dir }}/server.hcl"

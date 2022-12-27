@@ -40,7 +40,7 @@
     group: "{{ new_user.group }}"
 
 - name: Add ssh public key
-  ansible.builtin.authorized_key:
+  ansible.posix.authorized_key:
     user: "{{ new_user.name }}"
     key: "{{ ssh_key_url }}"
     path: "{{ new_user.home }}/.ssh/authorized_keys"

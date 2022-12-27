@@ -1,0 +1,75 @@
+node_name = "{{ ansible_hostname }}"
+
+# Logging
+## Logging is defined at directory level
+log_file = "/home/consul/"
+log_rotate_duration = "24h"
+log_rotate_bytes = 10485760
+log_rotate_max_files = 30
+
+auto_encrypt {
+  allow_tls = true
+}
+
+verify_incoming = false
+verify_outgoing = false
+verify_server_hostname = false
+
+recursors = ["8.8.8.8"]
+# Advertise on tailscale if it is available
+
+advertise_addr = "{{ GetInterfaceIP \"tailscale0\" }}"
+# Loop over server group entries
+retry_join = ["bare","pi3","inky"]
+
+# Enable Consul ACLs
+acl = {
+  enabled = true
+  default_policy = "allow"
+  enable_token_persistence = true
+}
+
+telemetry {
+  prometheus_retention_time = "60s"
+}
+
+audit {
+  enabled = true
+  sink "default" {
+    type = "file"
+    format = "json"
+    path = "/home/consul/audit.json"
+    delivery_guarantee = "best-effort"
+    log_rotate_duration = "24h"
+    log_rotate_max_files = 5
+    log_rotate_bytes = 1024000
+  }
+}
+
+{% if server | bool %}
+autopilot {
+  cleanup_dead_servers = true
+  last_contact_threshold = "20s"
+  max_trailing_logs = 1000
+  min_quorum = 2
+  server_stabilisation_time = "30s"
+}
+{% endif %}
+
+# Allow bind on all interfaces
+bind_addr = "0.0.0.0"
+
+# Allow client to respond to requests on all interfaces
+client_addr = "0.0.0.0"
+# Name of the datacenter
+datacenter = {{ datacenter }}
+# Path to where Consul will store its data
+data_dir = "{{ consul_data_dir }}"
+
+disable_remote_exec = "{{ disable_remote_exec }}"
+
+discovery_max_stale = {{ discovery_max_stale | to_number }}
+
+dns_config {
+  allow_stale = "{{ allow_stale }}"
+}
