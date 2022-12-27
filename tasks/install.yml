@@ -6,7 +6,7 @@
 
 - name: Ensure Consul is executable
   block:
-    - name: test execution
+    - name: Test execution
       ansible.builtin.command: consul --version
       register: consul_version_test
       changed_when: false
@@ -18,7 +18,7 @@
         fail_msg: "Consul was not successfully installed"
   rescue:
     # Ensure the correct version is present, removing the existing one
-    - name: ensure old consul is gone
+    - name: Ensure old consul is gone
       become: true
       ansible.builtin.file:
         path: /bin/consul
@@ -44,7 +44,7 @@
 
 - name: Ensure Consul Template is executable
   block:
-    - name: test execution
+    - name: Test execution
       ansible.builtin.command: consul-template --version
       register: consul_template_version_test
       changed_when: false

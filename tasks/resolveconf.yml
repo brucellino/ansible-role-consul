@@ -1,0 +1,43 @@
+---
+# tasks to configure dns resolution
+- name: Ensure resolveconf dir
+  become: true
+  ansible.builtin.file:
+    path: /etc/systemd/resolved.conf.d/
+    state: directory
+    mode: 0777
+    owner: root
+    group: root
+  tags:
+    - resolved
+
+# copy consul consul resolved configuration
+- name: Copy consul resolved configuration
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/systemd/resolved.conf.d/consul.conf
+    src: etc/systemd/resolved.conf.d/consul.conf
+    force: true
+    mode: 0644
+    owner: systemd-resolve
+    group: root
+  notify: restart resolved
+  tags:
+    - resolved
+
+- name: Enable resolved
+  become: true
+  ansible.builtin.systemd:
+    name: systemd-resolved
+    enabled: true
+    masked: false
+  tags:
+    - resolved
+
+- name: Restart resolved
+  become: true
+  ansible.builtin.systemd:
+    name: systemd-resolved
+    state: restarted
+  tags:
+    - resolved

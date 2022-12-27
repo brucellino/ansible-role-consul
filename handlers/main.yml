@@ -11,6 +11,6 @@
     scope: system
     no_block: true
 
-- name: reload consul
+- name: Reload consul
   ansible.builtin.command:
     cmd: consul reload
