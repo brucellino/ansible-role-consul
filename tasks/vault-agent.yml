@@ -24,22 +24,22 @@
 
 - name: Get Role id
   ansible.builtin.uri:
-    url: "http://{{ lookup('ENV', 'VAULT_ADDR') }}/v1/auth/hashiatho.me/role/consul-secrets/role-id"
+    url: "{{ lookup('env', 'VAULT_ADDR') }}/v1/auth/hashiatho.me/role/consul-secrets/role-id"
     method: GET
     return_content: true
     status_code: [200]
     headers:
-      X-Vault-Token: "{{ lookup('ENV', 'VAULT_TOKEN') }}"
+      X-Vault-Token: "{{ lookup('env', 'VAULT_TOKEN') }}"
   register: role_id
 
 - name: Debug role id
   ansible.builtin.debug:
-    msg: role_id.content.data.role_id
+    msg: "{{role_id.json.data.role_id}}"
 # This should be a lookup from vault API
 - name: Deliver role id
   ansible.builtin.copy:
     dest: "{{ vault_agent_config_dir }}/vault_roleid"
-    content: role_id.content.data.role_id
+    content: "{{ role_id.json.data.role_id }}"
     backup: true
     force: true
     mode: 0644
