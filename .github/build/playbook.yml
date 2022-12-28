@@ -15,8 +15,15 @@
           sudo
       changed_when: false
 
-- name: Consul
-  hosts: all
+- name: Deploy consul agents
+  hosts: consul_agents:!consul_servers
   become: true
   roles:
-    - ansible-role-consul
+    - role: ansible-role-consul
+      is_server: false
+      consul_port: 53
+      consul_version: 1.14.3
+      consul_template_version: 0.29.6
+      vault_version: 1.12.2
+  tags:
+    - "agents"
