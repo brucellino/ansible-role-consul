@@ -56,7 +56,7 @@ recursor_dns:
 server_ips: []
 allow_stale: true
 disable_remote_exec: false
-discovery_max_stale: 2
+discovery_max_stale: 10m
 # Consul template defaults
 consul_template_url: "https://releases.hashicorp.com/consul-template"
 consul_template_version: 0.29.6

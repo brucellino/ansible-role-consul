@@ -1,4 +1,4 @@
-node_name = "{{ ansible_hostname }}"
+node_name = "[[ ansible_hostname ]]"
 
 # Logging
 ## Logging is defined at directory level
@@ -8,7 +8,7 @@ log_rotate_bytes = 10485760
 log_rotate_max_files = 30
 
 auto_encrypt {
-  allow_tls = true
+  tls = true
 }
 
 verify_incoming = false
@@ -33,18 +33,6 @@ telemetry {
   prometheus_retention_time = "60s"
 }
 
-audit {
-  enabled = true
-  sink "default" {
-    type = "file"
-    format = "json"
-    path = "/home/consul/audit.json"
-    delivery_guarantee = "best-effort"
-    log_rotate_duration = "24h"
-    log_rotate_max_files = 5
-    log_rotate_bytes = 1024000
-  }
-}
 
 {% if is_server | bool | default('false') %}
 autopilot {
@@ -62,14 +50,14 @@ bind_addr = "0.0.0.0"
 # Allow client to respond to requests on all interfaces
 client_addr = "0.0.0.0"
 # Name of the datacenter
-datacenter = {{ datacenter }}
+datacenter = "[[ data_centre ]]"
 # Path to where Consul will store its data
-data_dir = "{{ consul_data_dir }}"
+data_dir = "[[ consul_data_dir ]]"
 
-disable_remote_exec = "{{ disable_remote_exec }}"
+disable_remote_exec = [[ disable_remote_exec | bool | lower ]]
 
-discovery_max_stale = {{ discovery_max_stale | to_number }}
+discovery_max_stale = "[[ discovery_max_stale ]]"
 
 dns_config {
-  allow_stale = "{{ allow_stale }}"
+  allow_stale = [[ allow_stale | bool | lower ]]
 }

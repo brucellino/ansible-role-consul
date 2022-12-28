@@ -49,11 +49,8 @@
 - name: Configure Systemd services
   ansible.builtin.include_tasks: service.yml
   tags: ['service']
+  when: not contained.stat.exists
 
 - name: Launch in Container
   ansible.builtin.include_tasks: launch-contained.yml
   when: contained.stat.exists
-
-- name: Launch with Systemd
-  ansible.builtin.include_tasks: launch-systemd.yml
-  when: not contained.stat.exists
