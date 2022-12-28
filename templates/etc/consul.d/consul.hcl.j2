@@ -7,9 +7,11 @@ log_rotate_duration = "24h"
 log_rotate_bytes = 10485760
 log_rotate_max_files = 30
 
+{% if not is_server %}
 auto_encrypt {
   tls = true
 }
+{% endif %}
 
 verify_incoming = false
 verify_outgoing = false
@@ -40,7 +42,7 @@ autopilot {
   last_contact_threshold = "20s"
   max_trailing_logs = 1000
   min_quorum = 2
-  server_stabilisation_time = "30s"
+  server_stabilization_time = "30s"
 }
 {% endif %}
 
