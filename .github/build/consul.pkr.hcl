@@ -126,7 +126,8 @@ build {
       "ANSIBLE_HOST_KEY_CHECKING=False",
       "ANSIBLE_SSH_ARGS='-o ForwardAgent=yes -o ControlMaster=auto -o ControlPersist=60s'",
       "ANSIBLE_NOCOLOR=True",
-      "ANSIBLE_ROLES_PATH=${var.roles_path}"
+      "ANSIBLE_ROLES_PATH=${var.roles_path}",
+      "ANSIBLE_CONNECTION=docker"
     ]
     only = ["docker.ubuntu-arm64", "docker.ubuntu-amd64"]
   }
