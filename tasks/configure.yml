@@ -11,7 +11,7 @@
     variable_start_string: "[["
     variable_end_string: "]]"
     force: true
-  notify: reload consul
+  notify: Reload consul
 
 - name: Template agent configuration
   become: true

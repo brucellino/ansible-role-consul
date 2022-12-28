@@ -89,3 +89,4 @@ consul_user_groups:
   debian:
     - consul
 timezone: "Europe/Rome"
+country_code: IT

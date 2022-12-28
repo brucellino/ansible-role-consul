@@ -15,11 +15,12 @@
     state: present
 
 - name: Lookup secrets
+  delegate_to: localhost
   ansible.builtin.set_fact: # noqa: jinja[invalid]
     secrets: "{{ lookup('hashi_vault', 'secret=kv/data/hashiathome validate_certs=false') }}"  # pragma: allowlist secret
 
-- name: Install
-  ansible.builtin.include_tasks: install.yml
+# - name: Install
+#   ansible.builtin.include_tasks: install.yml
 
 - name: Vault Agent
   ansible.builtin.include_tasks: vault-agent.yml
@@ -30,9 +31,12 @@
   ansible.builtin.include_tasks: user.yml
   when: add_default_user | default('false') | bool
 
-- name: System
-  ansible.builtin.include_tasks: system.yml
-  when: not contained.stat.exists
+# - name: System
+#   ansible.builtin.include_tasks: system.yml
+#   when:
+#     - not contained.stat.exists
+#     - configure_wifi
+
 
 - name: Configure
   ansible.builtin.include_tasks: configure.yml
@@ -45,7 +49,6 @@
 - name: Configure Systemd services
   ansible.builtin.include_tasks: service.yml
   tags: ['service']
-
 
 - name: Launch in Container
   ansible.builtin.include_tasks: launch-contained.yml
