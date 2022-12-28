@@ -2,27 +2,30 @@
 Description="HashiCorp Consul - A service mesh solution"
 Documentation=https://www.consul.io/
 Requires=network-online.target
-After=vault-agent.target
-ConditionFileNotEmpty=[[ consul_config_dir ]]/consul.hcl
-ConditionPathExists=[[ consul_config_dir ]]/
+After=network-online.target
+ConditionFileNotEmpty=/etc/consul.d/consul.hcl
+
 [Service]
 Type=notify
 User=consul
 Group=consul
+Environment=VAULT_ADDR=http://active.vault.service.consul:8200
+Environment=VAULT_SKIP_VERIFY=true
+{% if vault_agent_enabled %}
+# ExecStartPre=/usr/bin/vault agent -config /etc/vault/vault-agent.hcl
+{% endif %}
 ExecStart=/bin/consul agent \
-  -dns-port [[ dns_port ]] \
-  -config-dir=[[ consul_config_dir ]]
-  -auto-reload-config \
-  -client "0.0.0.0" \
-  -bind "0.0.0.0" \
-  -advertise '{{ GetAllInterfaces | include "network" "[[ internal_network_cidr ]]" | attr "address" }}'
+  -dns-port [[ consul_port ]] \
+  -config-dir=/etc/consul.d/
+
 ExecReload=/bin/kill --signal HUP $MAINPID
 KillMode=process
 KillSignal=SIGTERM
 Restart=on-failure
 LimitNOFILE=65536
-StandardOutput=append:/var/log/consul.log
+{% if consul_port | int < 1024 %}
 AmbientCapabilities=CAP_NET_BIND_SERVICE
+{% endif %}
 
 [Install]
 WantedBy=multi-user.target
