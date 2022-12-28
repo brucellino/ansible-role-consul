@@ -20,7 +20,7 @@
     mode: 0644
     variable_start_string: "[["
     variable_end_string: "]]"
-  notify: reload systemd
+  notify: Reload consul
 
 - name: Add Custom DNS template
   become: true
