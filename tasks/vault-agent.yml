@@ -14,29 +14,47 @@
     owner: root
     group: root
 
-- name: Create Vault templates
-  ansible.builtin.template:
-    src: etc/vault-agent.hcl.j2
-    dest: /etc/vault-agent.hcl
-    backup: true
-    mode: 0644
+- name: Ensure Vault Agent configuration directory
+  ansible.builtin.file:
+    path: "{{ vault_agent_config_dir }}"
+    state: directory
+    mode: 0755
     owner: root
     group: root
 
+- name: Get Role id
+  ansible.builtin.uri:
+    url: "{{ lookup('env', 'VAULT_ADDR') }}/v1/auth/hashiatho.me/role/consul-secrets/role-id"
+    method: GET
+    return_content: true
+    status_code: [200]
+    headers:
+      X-Vault-Token: "{{ lookup('env', 'VAULT_TOKEN') }}"
+  register: role_id
+
 - name: Deliver role id
   ansible.builtin.copy:
-    dest: /etc/vault_roleid
-    content: "role_id"
+    dest: "{{ vault_agent_config_dir }}/vault_roleid"
+    content: "{{ role_id.json.data.role_id }}"
     backup: true
     force: true
     mode: 0644
     owner: root
     group: root
 
+- name: Create Vault templates
+  ansible.builtin.template:
+    src: etc/vault-agent.hcl.j2
+    dest: "{{ vault_agent_config_dir }}/vault-agent.hcl"
+    backup: true
+    mode: 0644
+    owner: root
+    group: root
+
 - name: Deliver agent templates
   ansible.builtin.template:
-    dest: "{{ consul_config_dir }}/{{ item }}.tmpl"
-    src: "etc/vault.d/{{ item }}.tmpl.j2"
+    dest: "{{ vault_agent_config_dir }}/{{ item.template }}.tmpl"
+    src: "etc/vault.d/{{ item.template }}.tmpl.j2"
     backup: true
     mode: 0644
     owner: root
@@ -46,7 +64,6 @@
   loop: "{{ vault_agent_templates }}"
 
 - name: Systemd Unit
-  when: not contained.stat.exists
   block:
     - name: Template Vault Agent systemd unit
       ansible.builtin.template:
@@ -57,7 +74,7 @@
         owner: root
         group: root
         # validate: systemd-analyze verify %s
-      notify: vault-agent-service
+      notify: Vault Agent Service
 
     - name: Enable Vault Agent service
       ansible.builtin.systemd:
@@ -69,3 +86,4 @@
         daemon_reexec: true
         scope: system
         no_block: true
+#  when: not contained.stat.exists

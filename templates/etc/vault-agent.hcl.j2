@@ -1,6 +1,6 @@
 pid_file = "./pidfile"
 
-{% if vault_agent_auto_auth_enabled | bool | default(false) %}
+{% if vault_agent_auto_auth_enabled | default(false) | bool %}
 auto_auth {
   {% if vault_agent_auto_auth_method == 'approle' %}
   method {

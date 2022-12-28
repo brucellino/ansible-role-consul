@@ -1,5 +1,5 @@
 ---
-# defaults file for ansible-role-template
+# defaults file for consul
 prerequisites:
   focal:
     - curl
@@ -9,6 +9,7 @@ prerequisites:
     - tmux
     - unzip
     - vim
+    - bind9utils
   bullseye:
     - curl
     - gnupg
@@ -17,62 +18,77 @@ prerequisites:
     - tmux
     - unzip
     - vim
-hashicorp_releases_url: https://releases.hashicorp.com
-
+    - bind9utils
+  buster:
+    - curl
+    - gnupg
+    - gzip
+    - jq
+    - tmux
+    - unzip
+    - vim
+    - bind9utils
 arch:
   x86_64: amd64
   aarch64: arm64
   armv6l: arm
 
-# Consul version and zipfile url values. These are used to obtain the Consul binaries
-# Consul is not optional
-consul_version: 1.14.2
-consul_zip_url: "{{ hashicorp_releases_url }}/consul/{{ consul_version }}/consul_{{ consul_version }}_linux_{{ arch[ansible_architecture] }}.zip" # noqa yaml[line-length]
-# Configuration defaults
+# Consul defaults
+consul_version: 1.14.3
+hashicorp_releases_url: "https://releases.hashicorp.com" # noqa yaml[line-length]
+consul_zip_url: "{{ hashicorp_releases_url }}/consul/{{ consul_version }}/consul_{{ consul_version }}_linux_{{ arch[ansible_architecture] }}.zip" # noqa yaml
+consul_url: "{{ hashicorp_releases_url }}/consul"
+# Consul Configuration defaults
 consul_config_dir: /etc/consul.d
-datacenter: dc1
+data_centre: dc1 # Name of the data centre
+data_dir: /opt/consul
+bootstrap_expect: 3
+autoencrypt: true
+consul_port: 8600
 consul_data_dir: /opt/consul
-consul_logging_dir: /home/consul
-log_rotate_duration: "24h"
-log_rotate_bytes: 10485760
-log_rotate_max_files: 30
-# Consul Template variables. See https://github.com/hashicorp/consul-template
-enable_consul_template: true  # Should we provision Consul Template on this instance (boolean)
-consul_template_version: 0.29.1 # See https://releases.hashicorp.com/consul-template for details
-consul_template_zip_url: "{{ hashicorp_releases_url }}/consul-template/{{ consul_template_version }}/consul-template_{{ consul_template_version }}_linux_{{ arch[ansible_architecture] }}.zip" # noqa yaml[line-length]
-
-# Consul configuration variables
+connect_enabled: true
 verify_incoming: true
 verify_outgoing: true
 verify_server_hostname: false
-# The CIDR of your internal network that Consul will communicate on
-internal_network_cidr: "192.168.1.0/24"
 dns_port: 53
 recursor_dns:
   - "1.1.1.1"
 server_ips: []
-# Vault variables.
-# Vault agent allows us to provide the consul secrets dynamically --
-# Consul gossip key and cluster certificates
-vault_version: 1.11.0
-enable_vault_agent: true
-vault_zip_url: "{{ hashicorp_releases_url }}/vault/{{ vault_version }}/vault_{{ vault_version }}_linux_{{ arch[ansible_architecture] }}.zip" # noqa yaml[line-length]
+allow_stale: true
+disable_remote_exec: false
+discovery_max_stale: 10m
+# Consul template defaults
+consul_template_url: "https://releases.hashicorp.com/consul-template"
+consul_template_version: 0.29.6
+
+# Consul log configuration defaults
+consul_log_dir: /home/consul/
+consul_log_rotate_bytes: 10485760
+consul_log_rotate_max_files: 30
+consul_log_rotate_duration: "24h"
+
+# Consul agent certificate defaults
+consul_certs_dir: "{{ consul_data_dir }}/agent-certs"
+
+# Vault variables for vault agent
+vault_agent_enabled: true
+vault_version: 1.12.2
+vault_zip_url: "{{ hashicorp_releases_url }}/vault/{{ vault_version }}/vault_{{ vault_version }}_linux_{{ arch[ansible_architecture] }}.zip" # noqa yaml
+vault_agent_config_dir: /etc/vault-agent.d
 vault_agent_auto_auth_enabled: true
-# The default auto auth method for
 vault_agent_auto_auth_method: approle
+consul_certs_from_vault: true
+vault_ca_role: hah_int_role
 vault_agent_role: consul-secrets
 vault_agent_templates:
-  - consul.hcl
-  - consul-agent-ca.pem
-
-# Other variables
-set_host_name: true
-host_name: raspberry-pi
-add_default_user: true
-default_username: becker
-default_user_group: "{{ default_username }}"
-ssh_key_url: http://github.com/brucellino.keys
-wifi_network_name: wifi_network
-wifi_psk: 12345
-country_code: "IT"
+  - template: consul-server
+    destination: /etc/consul.d/
+    permissions: "0666"
+consul_user_groups:
+  ubuntu:
+    - consul
+    - syslog
+  debian:
+    - consul
 timezone: "Europe/Rome"
+country_code: IT

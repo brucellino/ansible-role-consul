@@ -1,9 +1,4 @@
 ---
-- name: Set hostname
-  ansible.builtin.hostname:
-    name: "{{ host_name }}"
-    use: "{{ ansible_os_family | lower }}"
-
 - name: Template WPA Supplicant configuration
   ansible.builtin.template:
     src: etc/wpa_supplicant/wpa_supplicant.conf.j2

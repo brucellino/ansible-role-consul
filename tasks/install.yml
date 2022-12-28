@@ -1,0 +1,126 @@
+---
+- name: Add prerequisites
+  ansible.builtin.package:
+    name: "{{ prerequisites[ansible_distribution_release] }}"
+    state: present
+
+- name: Ensure Consul is executable
+  block:
+    - name: Test execution
+      ansible.builtin.command: consul --version
+      register: consul_version_test
+      changed_when: false
+    - name: Test assertion
+      ansible.builtin.assert:
+        that:
+          - "consul_version in consul_version_test.stdout"
+        success_msg: "Consul version {{ consul_version }} is ready"
+        fail_msg: "Consul was not successfully installed"
+  rescue:
+    # Ensure the correct version is present, removing the existing one
+    - name: Ensure old consul is gone
+      become: true
+      ansible.builtin.file:
+        path: /bin/consul
+        state: absent
+
+    - name: Unpack Consul
+      become: true
+      ansible.builtin.unarchive:
+        src: "{{ consul_url }}/{{ consul_version }}/consul_{{ consul_version }}_linux_{{ consul_arch[ansible_architecture] }}.zip"
+        dest: /bin/
+        owner: root
+        group: root
+        remote_src: true
+        mode: 0777
+
+- name: Give consul low port permissions
+  become: true
+  community.general.capabilities:
+    path: /bin/consul
+    capability: cap_net_bind_service=+ep
+    state: present
+  when: consul_port < 1024
+
+- name: Ensure Consul Template is executable
+  block:
+    - name: Test execution
+      ansible.builtin.command: consul-template --version
+      register: consul_template_version_test
+      changed_when: false
+
+    - name: Test Template assertion
+      ansible.builtin.assert:
+        that:
+          - "consul_template_version in consul_template_version_test.stdout"
+        success_msg: "Consul Template version {{ consul_template_version }} is ready"
+        fail_msg: "Consul Template was not successfully installed"
+  rescue:
+    # Ensure the correct version is present, removing the existing one
+    - name: Ensure old Consul Template is gone
+      become: true
+      ansible.builtin.file:
+        path: /bin/consul-template
+        state: absent
+
+    - name: Unpack Consul Template
+      become: true
+      ansible.builtin.unarchive:
+        src: "{{ consul_template_url }}/{{ consul_template_version }}/consul-template_{{ consul_template_version }}_linux_{{ consul_arch[ansible_architecture] }}.zip" # noqa yaml
+        dest: /bin/
+        owner: root
+        group: root
+        remote_src: true
+        mode: 0777
+
+- name: Ensure config directory
+  ansible.builtin.file:
+    path: "{{ consul_config_dir }}"
+    state: directory
+    mode: 0777
+    owner: root
+    group: root
+
+- name: Ensure consul group
+  become: true
+  ansible.builtin.group:
+    name: consul
+    state: present
+
+- name: Ensure consul user
+  become: true
+  ansible.builtin.user:
+    name: consul
+    state: present
+    group: consul
+    groups: "{{ consul_user_groups[ansible_distribution | lower] }}"
+    append: true
+    create_home: false
+    generate_ssh_key: false
+
+- name: Ensure agent data directory
+  become: true
+  ansible.builtin.file:
+    path: "{{ consul_data_dir }}"
+    state: directory
+    owner: consul
+    group: consul
+    mode: 0777
+
+- name: Ensure agent certificate directory
+  become: true
+  ansible.builtin.file:
+    path: "{{ consul_certs_dir }}"
+    state: directory
+    owner: consul
+    group: consul
+    mode: 0777
+
+- name: Ensure Logging directory
+  become: true
+  ansible.builtin.file:
+    path: "{{ consul_log_dir }}"
+    state: directory
+    mode: 0777
+    owner: consul
+    group: consul

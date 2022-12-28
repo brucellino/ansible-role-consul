@@ -1,0 +1,40 @@
+---
+# tasks for configuring Consul
+- name: Template server config
+  become: true
+  ansible.builtin.template:
+    src: etc/consul.d/server.hcl.j2
+    dest: "{{ consul_config_dir }}/server.hcl"
+    owner: consul
+    group: consul
+    mode: 0640
+    variable_start_string: "[["
+    variable_end_string: "]]"
+    force: true
+  notify: Reload consul
+
+- name: Template agent configuration
+  become: true
+  ansible.builtin.template:
+    src: etc/consul.d/consul.hcl.j2
+    dest: "{{ consul_config_dir }}/consul.hcl"
+    owner: consul
+    group: consul
+    mode: 0640
+    variable_start_string: "[["
+    variable_end_string: "]]"
+    # validate: consul validate %s
+
+- name: Deliver Consul watches configuration
+  ansible.builtin.copy:
+    dest: "{{ consul_config_dir }}/watches.hcl"
+    src: etc/consul.d/watches.hcl
+    mode: 0644
+    owner: consul
+    group: consul
+
+- name: Ensure not server when not server
+  ansible.builtin.file:
+    path: "{{ consul_config_dir }}/server.hcl"
+    state: absent
+  when: not is_server

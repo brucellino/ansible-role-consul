@@ -8,19 +8,49 @@
     get_attributes: false
   register: contained
 
-- name: Prerequisites
-  ansible.builtin.include_tasks: prerequisites.yml
-- name: User
-  ansible.builtin.include_tasks: user.yml
-  when: add_default_user | bool
-- name: System
-  ansible.builtin.include_tasks: system.yml
-  when: not contained.stat.exists
+- name: Ensure bind9 utils is present
+  become: true
+  ansible.builtin.package:
+    name: bind9utils
+    state: present
+
+- name: Lookup secrets
+  delegate_to: localhost
+  ansible.builtin.set_fact: # noqa: jinja[invalid]
+    secrets: "{{ lookup('hashi_vault', 'secret=kv/data/hashiathome validate_certs=false') }}"  # pragma: allowlist secret
+
+# - name: Install
+#   ansible.builtin.include_tasks: install.yml
+
 - name: Vault Agent
   ansible.builtin.include_tasks: vault-agent.yml
+  when: vault_agent_enabled
+  tags: ['vault']
+
+- name: User
+  ansible.builtin.include_tasks: user.yml
+  when: add_default_user | default('false') | bool
+
+# - name: System
+#   ansible.builtin.include_tasks: system.yml
+#   when:
+#     - not contained.stat.exists
+#     - configure_wifi
+
+
+- name: Configure
+  ansible.builtin.include_tasks: configure.yml
+
+- name: Resolve conf
+  ansible.builtin.include_tasks: resolveconf.yml
+  tags: ['resolveconf']
+  when: consul_port > 1024
+
+- name: Configure Systemd services
+  ansible.builtin.include_tasks: service.yml
+  tags: ['service']
+  when: not contained.stat.exists
+
 - name: Launch in Container
   ansible.builtin.include_tasks: launch-contained.yml
   when: contained.stat.exists
-- name: Launch with Systemd
-  ansible.builtin.include_tasks: launch-systemd.yml
-  when: not contained.stat.exists
