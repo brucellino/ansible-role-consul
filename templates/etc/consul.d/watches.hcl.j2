@@ -1,0 +1,12 @@
+watches = [
+  {
+    type = "event"
+    name = "ansible-bootstrap"
+    args = ["{{ consul_data_dir }}/scripts/ansible-bootstrap.sh"]
+  },
+  {
+    type = "key"
+    key = "hashiatho.me/ansible"
+    args = ["{{ consul_data_dir }}/scripts/ansible-bootstrap.sh"]
+  }
+]

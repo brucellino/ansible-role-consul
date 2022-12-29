@@ -37,9 +37,10 @@
 #     - not contained.stat.exists
 #     - configure_wifi
 
-
 - name: Configure
   ansible.builtin.include_tasks: configure.yml
+  tags:
+    - configure
 
 - name: Resolve conf
   ansible.builtin.include_tasks: resolveconf.yml

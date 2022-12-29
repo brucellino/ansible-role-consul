@@ -1,3 +1,11 @@
+## [1.4.2](https://github.com/brucellino/ansible-role-consul/compare/v1.4.1...v1.4.2) (2022-12-28)
+
+
+### Bug Fixes
+
+* **resolv:** add tailscale network to dns search ([5007842](https://github.com/brucellino/ansible-role-consul/commit/5007842547df5512a8dd7c310245eb848a6f114e))
+* **templates:** fix templating tags ([d5a1246](https://github.com/brucellino/ansible-role-consul/commit/d5a1246b9123a39b7b740a5c8338b5babd6acdd3))
+
 ## [1.4.1](https://github.com/brucellino/ansible-role-consul/compare/v1.4.0...v1.4.1) (2022-12-28)
 
 

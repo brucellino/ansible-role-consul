@@ -25,13 +25,34 @@
     variable_end_string: "]]"
     # validate: consul validate %s
 
-- name: Deliver Consul watches configuration
+- name: Create scripts directory
+  ansible.builtin.file:
+    path: "{{ consul_data_dir }}/scripts"
+    state: directory
+    mode: 0700
+    owner: consul
+    group: consul
+
+- name: Deliver Ansible bootstrap script
   ansible.builtin.copy:
+    dest: "{{ consul_data_dir }}/scripts/ansible-bootstrap.sh"
+    src: opt/consul/scripts/ansible-bootstrap.sh
+    backup: true
+    mode: 0700
+    owner: consul
+    group: consul
+  tags:
+    - watches
+
+- name: Deliver Consul watches configuration
+  ansible.builtin.template:
     dest: "{{ consul_config_dir }}/watches.hcl"
-    src: etc/consul.d/watches.hcl
+    src: etc/consul.d/watches.hcl.j2
     mode: 0644
     owner: consul
     group: consul
+  tags:
+    - watches
 
 - name: Ensure not server when not server
   ansible.builtin.file:
