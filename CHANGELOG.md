@@ -1,3 +1,10 @@
+## [1.4.3](https://github.com/brucellino/ansible-role-consul/compare/v1.4.2...v1.4.3) (2022-12-29)
+
+
+### Bug Fixes
+
+* **templates:** template watches instead of copying them ([6b84ed0](https://github.com/brucellino/ansible-role-consul/commit/6b84ed081aecb2f43716ce6ffeeded36895c4870))
+
 ## [1.4.2](https://github.com/brucellino/ansible-role-consul/compare/v1.4.1...v1.4.2) (2022-12-28)
 
 
