@@ -79,7 +79,7 @@
     - name: Enable Vault Agent service
       ansible.builtin.systemd:
         name: vault-agent
-        state: started
+        state: restarted
         enabled: true
         masked: false
         daemon_reload: true

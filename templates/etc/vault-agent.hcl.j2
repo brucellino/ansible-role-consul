@@ -5,9 +5,9 @@ auto_auth {
   {% if vault_agent_auto_auth_method == 'approle' %}
   method {
     type = "approle"
-    mount_path = "{{ approle_mount_path }}"
+    mount_path = "auth/{{ approle_mount_path }}"
     config = {
-      role_id_file_path = "/etc/vault_roleid"
+      role_id_file_path = "/etc/vault-agent.d/vault_roleid"
       remove_secret_id_file_after_reading = false
       secret_id_response_wrapping_path = "vault_secretid"
       role = "{{ vault_agent_role }}"
@@ -25,7 +25,7 @@ auto_auth {
 {% endif %}
 
 template {
-  source      = "/etc/consul.d/consul-server.hcl.tmpl"
+  source      = "/etc/vault-agent.d/consul-server.tmpl"
   destination = "/etc/consul.d/consul-server.hcl"
 }
 
@@ -35,4 +35,5 @@ cache {
 
 listener "tcp" {
   address = "127.0.0.1:8100"
+  tls_disable = true
 }

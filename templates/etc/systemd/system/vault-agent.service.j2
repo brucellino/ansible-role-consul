@@ -4,7 +4,7 @@ Description="HashiCorp Vault - A tool for managing secrets"
 Documentation=https://www.vaultproject.io/docs/
 Requires=network-online.target
 After=network-online.target
-ConditionFileNotEmpty=/etc/vault.d/vault-agent.hcl
+ConditionFileNotEmpty={{ vault_agent_config_dir }}/vault-agent.hcl
 StartLimitIntervalSec=60
 StartLimitBurst=3
 
@@ -19,7 +19,7 @@ SecureBits=keep-caps
 AmbientCapabilities=CAP_IPC_LOCK
 CapabilityBoundingSet=CAP_SYSLOG CAP_IPC_LOCK
 NoNewPrivileges=yes
-ExecStart=/usr/local/bin/vault agent -config=/etc/vault.d/vault-agent.hcl
+ExecStart=/usr/local/bin/vault agent -config={{ vault_agent_config_dir }}/vault-agent.hcl
 ExecReload=/bin/kill --signal HUP $MAINPID
 KillMode=process
 KillSignal=SIGINT
@@ -29,8 +29,7 @@ TimeoutStopSec=30
 StartLimitInterval=60
 LimitNOFILE=65536
 LimitMEMLOCK=infinity
-StandardOutput=append:/var/log/vault.log
-
+StandardOutput=append:/var/log/vault-agent.log
 
 [Install]
 WantedBy=multi-user.target
