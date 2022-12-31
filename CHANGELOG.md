@@ -1,3 +1,10 @@
+## [1.4.4](https://github.com/brucellino/ansible-role-consul/compare/v1.4.3...v1.4.4) (2022-12-31)
+
+
+### Bug Fixes
+
+* **vault:** fix auth mount and other parameters ([2d8ed75](https://github.com/brucellino/ansible-role-consul/commit/2d8ed750955ff0db28ef1ae6aa61fd10133aab16))
+
 ## [1.4.3](https://github.com/brucellino/ansible-role-consul/compare/v1.4.2...v1.4.3) (2022-12-29)
 
 

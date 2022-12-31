@@ -24,6 +24,10 @@ auto_auth {
 
 {% endif %}
 
+vault {
+  address = "http://sense:8200"
+}
+
 template {
   source      = "/etc/vault-agent.d/consul-server.tmpl"
   destination = "/etc/consul.d/consul-server.hcl"
