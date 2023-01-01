@@ -3,3 +3,20 @@
 {{ .Data.private_key | writeToFile "[[ consul_data_dir ]]/agent-certs/[[ data_centre ]]-server-consul-0-key.pem" "consul" "consul" "0400" }}
 {{ .Data.issuing_ca | writeToFile "[[ consul_data_dir ]]/agent-certs/consul-agent-ca.pem" "consul" "consul" "0644" }}
 {{ end }}
+
+server = true
+verify_incoming = [[  verify_incoming | bool | lower ]]
+verify_outgoing = [[  verify_outgoing | bool | lower ]]
+verify_server_hostname = [[  verify_server_hostname | bool | lower ]]
+
+ca_file = "[[ consul_data_dir ]]/agent-certs/consul-agent-ca.pem"
+cert_file = "[[ consul_data_dir ]]/agent-certs/dc1-server-consul-0.pem"
+key_file = "[[ consul_data_dir ]]/agent-certs/dc1-server-consul-0-key.pem"
+
+auto_encrypt {
+  allow_tls = true
+}
+
+ui_config {
+  enabled = true
+}
