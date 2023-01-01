@@ -52,7 +52,9 @@ verify_outgoing: true
 verify_server_hostname: false
 dns_port: 53
 recursor_dns:
+  - "100.100.100.100"
   - "1.1.1.1"
+  - "8.8.8.8"
 server_ips: []
 allow_stale: true
 disable_remote_exec: false
@@ -81,9 +83,12 @@ consul_certs_from_vault: true
 vault_ca_role: hah_int_role
 vault_agent_role: consul-secrets
 vault_agent_templates:
-  - template: consul-server
-    destination: /etc/consul.d/
-    permissions: "0666"
+  - template: consul-server.hcl
+    destination: /etc/consul.d/server.hcl
+    permissions: "0644"
+  - template: consul.hcl
+    destination: /etc/consul.d/consul.hcl
+    permissions: "0644"
 consul_user_groups:
   ubuntu:
     - consul
