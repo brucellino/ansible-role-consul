@@ -79,6 +79,7 @@ vault_zip_url: "{{ hashicorp_releases_url }}/vault/{{ vault_version }}/vault_{{ 
 vault_agent_config_dir: /etc/vault-agent.d
 vault_agent_auto_auth_enabled: true
 vault_agent_auto_auth_method: approle
+vault_approle_mount_path: hashiatho.me
 consul_certs_from_vault: true
 vault_ca_role: hah_int_role
 vault_agent_role: consul-secrets
@@ -86,7 +87,7 @@ vault_agent_templates:
   - template: consul-server.hcl
     destination: /etc/consul.d/server.hcl
     permissions: "0644"
-  - template: consul.hcl
+  - template: consul-agent.hcl
     destination: /etc/consul.d/consul.hcl
     permissions: "0644"
 consul_user_groups:
