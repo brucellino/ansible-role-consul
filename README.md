@@ -16,17 +16,19 @@ This role provisions:
 2. Other necessary tools (`consul-template`, `vault`)
 3. Consul TLS and gossip secrets read from Vault
 
+The role is designed to use vault agent to template the consul configuration files.
+
 There is experimental support for joining wifi networks.
 
 ## Requirements
 
 This role requires a working Vault instance with TLS secrets and gossip keys in a given path.
+Machines are configured to authenticate to Vault with an Approle Role ID.
 
 This role can be applied to virtual machines, physical machines and docker containers.
-
 Support for OCI containers will come as soon as I can figure out a reliable way of detecting whether we are in an arbitrary kind of container.
-<!--
 
+<!--
 Could either use /.dockerenv or /.containerenv or docker in /proc/1/cgroup
 See https://stackoverflow.com/questions/23513045/how-to-check-if-a-process-is-running-inside-docker-container
  -->
