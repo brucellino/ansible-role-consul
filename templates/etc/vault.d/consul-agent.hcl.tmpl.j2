@@ -18,9 +18,23 @@ log_rotate_duration = "[[ consul_log_rotate_duration ]]"
 log_rotate_bytes = [[ consul_log_rotate_bytes ]]
 log_rotate_max_files = [[ consul_log_rotate_max_files ]]
 
-ca_file = "[[ consul_data_dir ]]/agent-certs/consul-agent-ca.pem"
-cert_file = "[[ consul_data_dir ]]/agent-certs/[[ data_centre ]]-consul-agent-[[ ansible_hostname ]].pem"
-key_file = "[[ consul_data_dir ]]/agent-certs/[[ data_centre ]]-consul-agent-[[ ansible_hostname ]]-key.pem"
+tls {
+  defaults {
+    ca_file = "[[ consul_data_dir ]]/agent-certs/consul-agent-ca.pem"
+    cert_file = "[[ consul_data_dir ]]/agent-certs/[[ data_centre ]]-consul-agent-[[ ansible_hostname ]].pem"
+    key_file = "[[ consul_data_dir ]]/agent-certs/[[ data_centre ]]-consul-agent-[[ ansible_hostname ]]-key.pem"
+  }
+}
+
+ports {
+  dns = 53
+  http = 8500
+  https = 8501
+  grpc = 8502
+  grpc_tls = 8503
+  serf_lan = 8301
+  server = 8300
+}
 
 verify_incoming = [[ verify_incoming | bool | lower ]]
 verify_outgoing = [[ verify_outgoing | bool | lower ]]
@@ -28,7 +42,8 @@ verify_server_hostname = [[ verify_server_hostname | bool | lower ]]
 
 recursors = [{%- for s in recursor_dns -%}"[[ s ]]"{%- if not loop.last -%},{% endif %}{% endfor %}]
 # retry_join = [{%- for s in server_ips -%}"[[ s ]]"{%- if not loop.last -%},{% endif %}{% endfor %}]
-
+rejoin_after_leave = true
+bind_addr = "0.0.0.0"
 advertise_addr = "{{ sockaddr "GetInterfaceIP \"tailscale0\"" }}"
 # Loop over server group entries
 retry_join = ["bare","pi3","inky"]
@@ -39,3 +54,15 @@ acl = {
   default_policy = "allow"
   enable_token_persistence = true
 }
+
+[% if is_server %]
+server = true
+
+auto_encrypt {
+  allow_tls = true
+}
+
+ui_config {
+  enabled = true
+}
+[% endif %]
