@@ -11,14 +11,12 @@ StartLimitBurst=3
 [Service]
 User=root
 Group=root
-ProtectSystem=full
-ProtectHome=read-only
-PrivateTmp=yes
-PrivateDevices=yes
+#ProtectHome=read-only
+#PrivateTmp=yes
+#PrivateDevices=yes
 SecureBits=keep-caps
 AmbientCapabilities=CAP_IPC_LOCK
-CapabilityBoundingSet=CAP_SYSLOG CAP_IPC_LOCK
-NoNewPrivileges=yes
+#NoNewPrivileges=yes
 ExecStart=/usr/local/bin/vault agent -config={{ vault_agent_config_dir }}/vault-agent.hcl
 ExecReload=/bin/kill --signal HUP $MAINPID
 KillMode=process

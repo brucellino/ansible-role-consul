@@ -1,11 +1,11 @@
 pid_file = "./pidfile"
 
-{% if vault_agent_auto_auth_enabled | default(false) | bool %}
+{% if vault_agent_auto_auth_enabled | default('false') | bool %}
 auto_auth {
   {% if vault_agent_auto_auth_method == 'approle' %}
   method {
     type = "approle"
-    mount_path = "auth/{{ approle_mount_path }}"
+    mount_path = "auth/{{ vault_approle_mount_path }}"
     config = {
       role_id_file_path = "/etc/vault-agent.d/vault_roleid"
       remove_secret_id_file_after_reading = false
@@ -28,11 +28,19 @@ vault {
   address = "http://sense:8200"
 }
 
+# Write Consul server configuration if the node is a server
+{% if is_server %}
 template {
-  source      = "/etc/vault-agent.d/consul-server.tmpl"
+  source      = "/etc/vault-agent.d/consul-server.hcl.tmpl"
   destination = "/etc/consul.d/consul-server.hcl"
 }
+{% endif %}
 
+# Template consul configuration and CA cert
+template {
+  source      = "/etc/vault-agent.d/consul-agent.hcl.tmpl"
+  destination = "/etc/consul.d/consul.hcl"
+}
 cache {
   use_auto_auth_token = true
 }

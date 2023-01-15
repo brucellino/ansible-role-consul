@@ -23,6 +23,8 @@
     group: root
 
 - name: Get Role id
+  delegate_to: localhost
+  become: false
   ansible.builtin.uri:
     url: "{{ lookup('env', 'VAULT_ADDR') }}/v1/auth/hashiatho.me/role/consul-secrets/role-id"
     method: GET
@@ -42,7 +44,7 @@
     owner: root
     group: root
 
-- name: Create Vault templates
+- name: Template Vault Agent template
   ansible.builtin.template:
     src: etc/vault-agent.hcl.j2
     dest: "{{ vault_agent_config_dir }}/vault-agent.hcl"
