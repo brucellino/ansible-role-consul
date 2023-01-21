@@ -3,8 +3,8 @@
 {{ .Data.private_key | writeToFile "[[ consul_data_dir ]]/agent-certs/[[ data_centre ]]-consul-agent-[[ ansible_hostname ]]-key.pem" "consul" "consul" "0400" }}
 {{ .Data.issuing_ca | writeToFile "[[ consul_data_dir ]]/agent-certs/consul-agent-ca.pem" "consul" "consul" "0644" }}
 {{ end }}
-node_name = "[[ ansible_hostname ]]"
-node_id = "{{ sprig_uuidv4 }}"
+#node_name = "[[ ansible_hostname ]]"
+#node_id = "{{ sprig_uuidv4 }}"
 auto_reload_config = true
 datacenter = "[[ data_centre ]]"
 data_dir = "[[ consul_data_dir ]]"
@@ -56,6 +56,9 @@ acl = {
   enabled = true
   default_policy = "allow"
   enable_token_persistence = true
+  tokens {
+    initial_management = {{ with secret "hashiatho.me-v2/consul" }}"{{ .Data.http_token }}"{{ end }}
+  }
 }
 
 server = [[ is_server | bool | lower ]]
@@ -69,6 +72,9 @@ autopilot {
 }
 ui_config {
   enabled = true
+}
+auto_encrypt {
+  allow_tls = true
 }
 {% else %}
 auto_encrypt {
