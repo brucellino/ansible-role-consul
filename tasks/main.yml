@@ -14,10 +14,10 @@
     name: bind9utils
     state: present
 
-- name: Lookup secrets
-  delegate_to: localhost
-  ansible.builtin.set_fact: # noqa: jinja[invalid]
-    secrets: "{{ lookup('hashi_vault', 'secret=kv/data/hashiathome validate_certs=false') }}"  # pragma: allowlist secret
+# - name: Lookup secrets
+#   delegate_to: localhost
+#   ansible.builtin.set_fact: # noqa: jinja[invalid]
+#     secrets: "{{ lookup('hashi_vault', 'secret=kv/data/hashiathome validate_certs=false') }}"  # pragma: allowlist secret
 
 - name: Install
   ansible.builtin.include_tasks: install.yml
@@ -27,9 +27,9 @@
   when: vault_agent_enabled
   tags: ['vault']
 
-# - name: User
-#   ansible.builtin.include_tasks: user.yml
-#   when: add_default_user | default('false') | bool
+- name: User
+  ansible.builtin.include_tasks: user.yml
+  when: add_default_user | default('false') | bool
 
 # - name: System
 #   ansible.builtin.include_tasks: system.yml
