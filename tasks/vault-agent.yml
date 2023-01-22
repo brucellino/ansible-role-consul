@@ -88,4 +88,4 @@
         daemon_reexec: true
         scope: system
         no_block: true
-#  when: not contained.stat.exists
+  when: not contained.stat.exists

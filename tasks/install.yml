@@ -27,7 +27,7 @@
     - name: Unpack Consul
       become: true
       ansible.builtin.unarchive:
-        src: "{{ consul_url }}/{{ consul_version }}/consul_{{ consul_version }}_linux_{{ consul_arch[ansible_architecture] }}.zip"
+        src: "{{ consul_zip_url }}"
         dest: /bin/
         owner: root
         group: root
