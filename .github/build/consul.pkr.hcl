@@ -89,7 +89,7 @@ source "docker" "ubuntu-arm64" {
   ]
   run_command = [
     "-d", "-i", "-t", "--entrypoint=/bin/bash",
-    "--name=ubuntu-consul-arm64",
+    "--name=ubuntu-arm64",
     "--", "{{ .Image }}"
   ]
 }
@@ -106,7 +106,7 @@ source "docker" "ubuntu-amd64" {
   ]
   run_command = [
     "-d", "-i", "-t", "--entrypoint=/bin/bash",
-    "--name=ubuntu-consul-amd64",
+    "--name=ubuntu-amd64",
     "--", "{{ .Image }}"
   ]
 }
@@ -122,13 +122,16 @@ build {
   provisioner "ansible" {
     playbook_file = "playbook.yml"
     groups        = ["pis"]
+    user = "root"
     ansible_env_vars = [
       "ANSIBLE_HOST_KEY_CHECKING=False",
       "ANSIBLE_SSH_ARGS='-o ForwardAgent=yes -o ControlMaster=auto -o ControlPersist=60s'",
       "ANSIBLE_NOCOLOR=True",
       "ANSIBLE_ROLES_PATH=${var.roles_path}",
-      "ANSIBLE_CONNECTION=docker"
+      "ANSIBLE_CONNECTION=docker",
+      "ANSIBLE_REMOTE_USER=root"
     ]
+    extra_arguments = ["-e", "ansible_connection=docker ansible_host=${source.name}", "-u", "root"]
     only = ["docker.ubuntu-arm64", "docker.ubuntu-amd64"]
   }
 
