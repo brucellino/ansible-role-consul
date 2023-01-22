@@ -84,9 +84,6 @@ consul_certs_from_vault: true
 vault_ca_role: hah_int_role
 vault_agent_role: consul-secrets
 vault_agent_templates:
-  - template: consul-server.hcl
-    destination: /etc/consul.d/server.hcl
-    permissions: "0644"
   - template: consul-agent.hcl
     destination: /etc/consul.d/consul.hcl
     permissions: "0644"
@@ -98,3 +95,5 @@ consul_user_groups:
     - consul
 timezone: "Europe/Rome"
 country_code: IT
+
+add_default_user: false

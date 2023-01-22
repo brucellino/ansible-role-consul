@@ -1,6 +1,7 @@
 # Playbook to deploy a base Consul cluster
 - name: Add python3
   hosts: pis
+  user: root
   gather_facts: false
   tasks:
     - name: Update APT
@@ -16,7 +17,8 @@
       changed_when: false
 
 - name: Deploy consul agents
-  hosts: consul_agents:!consul_servers
+  hosts: pis
+  user: root
   become: true
   roles:
     - role: ansible-role-consul
