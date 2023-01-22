@@ -95,3 +95,5 @@ consul_user_groups:
     - consul
 timezone: "Europe/Rome"
 country_code: IT
+
+add_default_user: false
