@@ -9,7 +9,7 @@ repos:
     - id: check-yaml
     - id: check-added-large-files
   - repo: https://github.com/ansible-community/ansible-lint
-    rev: v6.12.2
+    rev: v6.14.0a0
     hooks:
     - id: ansible-lint
       always_run: false
