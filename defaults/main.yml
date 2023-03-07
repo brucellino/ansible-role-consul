@@ -90,7 +90,6 @@ vault_agent_templates:
 consul_user_groups:
   ubuntu:
     - consul
-    - syslog
   debian:
     - consul
 timezone: "Europe/Rome"
