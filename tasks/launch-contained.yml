@@ -10,7 +10,7 @@
   ansible.builtin.template:
     src: entrypoint.sh.j2
     dest: /entrypoint.sh
-    mode: 0777
+    mode: "0777"
     owner: root
     group: root
     force: true

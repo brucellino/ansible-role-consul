@@ -3,7 +3,7 @@
   ansible.builtin.template:
     src: etc/wpa_supplicant/wpa_supplicant.conf.j2
     dest: /etc/wpa_supplicant/wpa_supplicant.conf
-    mode: 0644
+    mode: "0644"
     owner: root
     group: root
 
@@ -29,7 +29,7 @@
     dest: "{{ item.path }}"
     content: 0
     force: true
-    mode: 0644
+    mode: "0644"
     owner: root
     group: root
   loop: "{{ wlan_rfkill_files.files }}"
