@@ -66,6 +66,7 @@
   loop: "{{ vault_agent_templates }}"
 
 - name: Systemd Unit
+  when: not contained.stat.exists
   block:
     - name: Template Vault Agent systemd unit
       ansible.builtin.template:
@@ -88,4 +89,3 @@
         daemon_reexec: true
         scope: system
         no_block: true
-  when: not contained.stat.exists

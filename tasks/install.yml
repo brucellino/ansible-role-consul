@@ -66,12 +66,12 @@
     - name: Unpack Consul Template
       become: true
       ansible.builtin.unarchive:
-        src: "{{ consul_template_url }}/{{ consul_template_version }}/consul-template_{{ consul_template_version }}_linux_{{ arch[ansible_architecture] }}.zip" # noqa yaml
+        src: "{{ consul_template_url }}/{{ consul_template_version }}/consul-template_{{ consul_template_version }}_linux_{{ arch[ansible_architecture] }}.zip" # noqa yaml[line-length]
         dest: /bin/
         owner: root
         group: root
         remote_src: true
-        mode: 0777
+        mode: "0777"
 
 - name: Ensure config directory
   ansible.builtin.file:
