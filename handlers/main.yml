@@ -14,3 +14,4 @@
 - name: Reload consul
   ansible.builtin.command:
     cmd: consul reload
+  changed_when: false
