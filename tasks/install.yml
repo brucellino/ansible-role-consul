@@ -32,7 +32,7 @@
         owner: root
         group: root
         remote_src: true
-        mode: 0777
+        mode: "0777"
 
 - name: Give consul low port permissions
   become: true
@@ -66,18 +66,18 @@
     - name: Unpack Consul Template
       become: true
       ansible.builtin.unarchive:
-        src: "{{ consul_template_url }}/{{ consul_template_version }}/consul-template_{{ consul_template_version }}_linux_{{ arch[ansible_architecture] }}.zip" # noqa yaml
+        src: "{{ consul_template_url }}/{{ consul_template_version }}/consul-template_{{ consul_template_version }}_linux_{{ arch[ansible_architecture] }}.zip" # noqa yaml[line-length]
         dest: /bin/
         owner: root
         group: root
         remote_src: true
-        mode: 0777
+        mode: "0777"
 
 - name: Ensure config directory
   ansible.builtin.file:
     path: "{{ consul_config_dir }}"
     state: directory
-    mode: 0777
+    mode: "0777"
     owner: root
     group: root
 
@@ -105,7 +105,7 @@
     state: directory
     owner: consul
     group: consul
-    mode: 0777
+    mode: "0777"
 
 - name: Ensure agent certificate directory
   become: true
@@ -114,13 +114,13 @@
     state: directory
     owner: consul
     group: consul
-    mode: 0777
+    mode: "0777"
 
 - name: Ensure Logging directory
   become: true
   ansible.builtin.file:
     path: "{{ consul_log_dir }}"
     state: directory
-    mode: 0777
+    mode: "0777"
     owner: consul
     group: consul

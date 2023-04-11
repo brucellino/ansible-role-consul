@@ -26,7 +26,7 @@
     content: "{{ default_username }} ALL=(ALL) NOPASSWD: ALL" # pragma: allowlist secret
     backup: true
     force: true
-    mode: 0440
+    mode: "0440"
     owner: root
     group: root
     # validate:
@@ -35,7 +35,7 @@
   ansible.builtin.file:
     path: "{{ new_user.home }}/.ssh"
     state: directory
-    mode: 0700
+    mode: "0700"
     owner: "{{ new_user.name }}"
     group: "{{ new_user.group }}"
 

@@ -6,7 +6,7 @@
     src: lib/systemd/system/consul.service.j2
     dest: /lib/systemd/system/consul.service
     backup: false
-    mode: 0644
+    mode: "0644"
     owner: root
     group: root
     variable_end_string: "]]"

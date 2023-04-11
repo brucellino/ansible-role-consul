@@ -3,7 +3,7 @@
   ansible.builtin.file:
     path: "{{ consul_data_dir }}/scripts"
     state: directory
-    mode: 0700
+    mode: "0700"
     owner: consul
     group: consul
 
@@ -12,7 +12,7 @@
     dest: "{{ consul_data_dir }}/scripts/ansible-bootstrap.sh"
     src: opt/consul/scripts/ansible-bootstrap.sh
     backup: true
-    mode: 0700
+    mode: "0700"
     owner: consul
     group: consul
   tags:
