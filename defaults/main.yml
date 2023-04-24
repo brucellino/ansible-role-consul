@@ -34,7 +34,7 @@ arch:
   armv6l: arm
 
 # Consul defaults
-consul_version: 1.14.3
+consul_version: 1.15.2
 hashicorp_releases_url: "https://releases.hashicorp.com" # noqa yaml[line-length]
 consul_zip_url: "{{ hashicorp_releases_url }}/consul/{{ consul_version }}/consul_{{ consul_version }}_linux_{{ arch[ansible_architecture] }}.zip" # noqa yaml
 consul_url: "{{ hashicorp_releases_url }}/consul"
