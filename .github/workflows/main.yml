@@ -134,7 +134,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       vault:
-        image: "public.ecr.aws/hashicorp/vault:1.14"
+        image: "public.ecr.aws/hashicorp/vault:1.15"
         ports:
           - 8200:8200
         env:
@@ -180,7 +180,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       vault:
-        image: "public.ecr.aws/hashicorp/vault:1.14"
+        image: "public.ecr.aws/hashicorp/vault:1.15"
         ports:
           - 8200:8200
         env:
