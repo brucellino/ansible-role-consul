@@ -1,9 +1,3 @@
-{{ with secret "pki_hah_int/issue/hah_int_role" "common_name=[[ ansible_hostname ]].node.[[ data_centre ]].consul" "ttl=24h" "alt_names=[[ ansible_hostname ]].station, [[ ansible_hostname ]].node.consul,[[ ansible_hostname ]].hashiatho.me, [[ ansible_hostname ]].brucellino.github.beta.tailscale.net" }}
-{{ .Data.certificate | writeToFile "[[ consul_data_dir ]]/agent-certs/[[ data_centre ]]-server-consul-0.pem" "consul" "consul" "0644" }}
-{{ .Data.private_key | writeToFile "[[ consul_data_dir ]]/agent-certs/[[ data_centre ]]-server-consul-0-key.pem" "consul" "consul" "0400" }}
-{{ .Data.issuing_ca | writeToFile "[[ consul_data_dir ]]/agent-certs/consul-agent-ca.pem" "consul" "consul" "0644" }}
-{{ end }}
-
 server = true
 verify_incoming = [[  verify_incoming | bool | lower ]]
 verify_outgoing = [[  verify_outgoing | bool | lower ]]
