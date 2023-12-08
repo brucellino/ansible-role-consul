@@ -17,7 +17,7 @@ Group=root
 SecureBits=keep-caps
 AmbientCapabilities=CAP_IPC_LOCK
 #NoNewPrivileges=yes
-ExecStart=/usr/local/bin/vault agent -config={{ vault_agent_config_dir }}/vault-agent.hcl
+ExecStart=/usr/bin/vault agent -config={{ vault_agent_config_dir }}/vault-agent.hcl
 ExecReload=/bin/kill --signal HUP $MAINPID
 KillMode=process
 KillSignal=SIGINT
