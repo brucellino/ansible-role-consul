@@ -10,6 +10,24 @@ prerequisites:
     - unzip
     - vim
     - bind9utils
+  bionic:
+    - curl
+    - gnupg
+    - gzip
+    - jq
+    - tmux
+    - unzip
+    - vim
+    - bind9utils
+  jammy:
+    - curl
+    - gnupg
+    - gzip
+    - jq
+    - tmux
+    - unzip
+    - vim
+    - bind9utils
   bullseye:
     - curl
     - gnupg
@@ -28,6 +46,7 @@ prerequisites:
     - unzip
     - vim
     - bind9utils
+
 arch:
   x86_64: amd64
   aarch64: arm64
