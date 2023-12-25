@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Lint
@@ -29,19 +29,25 @@ jobs:
   secure:
     name: Security
     runs-on: ubuntu-latest
+    env:
+      NODE_OPTIONS: --openssl-legacy-provider
     steps:
       - name: Checkout
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Make results-dir
         run: mkdir -p results-dir
       - name: run kics Scan
-        uses: checkmarx/kics-action@v1.6
+        uses: checkmarx/kics-action@v1.7.0
         with:
           path: '.'
           output_path: results-dir
           output_formats: 'json,sarif'
+          enable_comments: true
+          enable_annotations: true
+          enable_jobs_summary: true
+          fail_on: high
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v3
         with:
@@ -64,7 +70,7 @@ jobs:
           - "consul.arm.raspi-os-64"
     steps:
       - name: Checkout
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Get Prerequisites
@@ -231,7 +237,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Get os image
