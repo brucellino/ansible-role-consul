@@ -62,4 +62,9 @@ discovery_max_stale = "[[ discovery_max_stale ]]"
 
 dns_config {
   allow_stale = [[ allow_stale | bool | lower ]]
+  node_ttl = [[ node_ttl ]]
+  only_passing = [[ dns_on_only_passing ]]
+  {% if domain is defined %}
+  domain = [[ domain ]]
+  {% endif %}
 }
