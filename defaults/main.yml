@@ -64,18 +64,24 @@ data_dir: /opt/consul
 bootstrap_expect: 3
 autoencrypt: true
 consul_port: 8600
+consul_domain: consul
 consul_data_dir: /opt/consul
 connect_enabled: true
 verify_incoming: true
 verify_outgoing: true
 verify_server_hostname: false
-dns_port: 53
+dns_port: 8600
 recursor_dns:
   - "100.100.100.100"
   - "1.1.1.1"
   - "8.8.8.8"
 server_ips: []
+
+# DNS configuration parameters
 allow_stale: true
+node_ttl: "30s"
+dns_on_only_passing: true
+
 disable_remote_exec: false
 discovery_max_stale: 10m
 # Consul template defaults
