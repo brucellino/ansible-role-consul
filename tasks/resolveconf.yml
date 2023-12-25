@@ -14,16 +14,51 @@
 # copy consul consul resolved configuration
 - name: Copy consul resolved configuration
   become: true
-  ansible.builtin.copy:
+  ansible.builtin.template:
     dest: /etc/systemd/resolved.conf.d/consul.conf
-    src: etc/systemd/resolved.conf.d/consul.conf
+    src: etc/systemd/resolved.conf.d/consul.conf.j2
     force: true
     mode: "0644"
     owner: systemd-resolve
     group: root
-  notify: restart resolved
+  notify: Restart resolved
   tags:
     - resolved
+
+- name: Ensure stub directory
+  ansible.builtin.file:
+    path: /run/systemd/resolve/
+    state: directory
+    mode: "0777"
+    owner: root
+    group: root
+
+- name: Template resolveconf stub
+  ansible.builtin.template:
+    dest: /run/systemd/resolve/stub-resolv.conf
+    src: run/systemd/resolve/stub-resolv.conf.j2
+    mode: "0644"
+    owner: root
+    group: root
+
+- name: Check state of resolve.conf
+  anisble.builtin.stat:
+    path: /etc/resolv.conf
+    follow: true
+  register: resolvconf_stat
+
+- name: Remove resolv.conf file
+  when: resolveconf_stat.islnk is not defined
+  ansible.builtin.file:
+    path: /etc/resolv.conf
+    state: absent
+
+- name: Ensure resolvconf is a symlink
+  ansible.builtin.file:
+    path: /etc/resolv.conf
+    state: link
+    src: /run/systemd/resolve/stub-resolv.conf
+    recurse: false
 
 - name: Enable resolved
   become: true

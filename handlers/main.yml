@@ -15,3 +15,8 @@
   ansible.builtin.command:
     cmd: consul reload
   changed_when: false
+
+- name: Restart resolved
+  ansible.builtin.systemd:
+    name: systemd-resolved
+    state: restarted

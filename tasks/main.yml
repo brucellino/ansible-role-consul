@@ -42,10 +42,10 @@
   tags:
     - configure
 
-# - name: Resolve conf
-#   ansible.builtin.include_tasks: resolveconf.yml
-#   tags: ['resolveconf']
-#   when: consul_port > 1024
+- name: Resolve conf
+  ansible.builtin.include_tasks: resolveconf.yml
+  tags: ['resolveconf']
+  when: consul_port > 1024
 
 - name: Configure Systemd services
   ansible.builtin.include_tasks: service.yml
