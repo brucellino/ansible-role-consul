@@ -1,5 +1,36 @@
 ---
 # tasks to configure dns resolution
+- name: Configure DNS servers
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/resolved.conf
+    regexp: '^.*DNS=.*$'
+    state: present
+    line: "#DNS=100.100.100.100 1.1.1.1"
+    backrefs: false
+    insertafter: "^[Resolve]$"
+    create: false
+    backup: true
+    firstmatch: true
+    mode: "0644"
+    owner: root
+    group: root
+
+- name: Configure DNS Search
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/resolved.conf
+    regexp: '^.*Domains=.*$'
+    state: present
+    line: "#Domains=~orca-ordinal.ts.net"
+    backrefs: false
+    insertafter: "^.*DNS=.*$"
+    create: false
+    backup: true
+    firstmatch: true
+    mode: "0644"
+    owner: root
+    group: root
+
+
 - name: Ensure resolveconf dir
   become: true
   ansible.builtin.file:
@@ -12,7 +43,7 @@
     - resolved
 
 # copy consul consul resolved configuration
-- name: Copy consul resolved configuration
+- name: Template consul resolved configuration
   become: true
   ansible.builtin.template:
     dest: /etc/systemd/resolved.conf.d/consul.conf
@@ -42,7 +73,7 @@
     group: root
 
 - name: Check state of resolve.conf
-  anisble.builtin.stat:
+  ansible.builtin.stat:
     path: /etc/resolv.conf
     follow: true
   register: resolvconf_stat
