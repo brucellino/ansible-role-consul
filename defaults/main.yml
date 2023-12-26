@@ -63,7 +63,6 @@ data_centre: dc1 # Name of the data centre
 data_dir: /opt/consul
 bootstrap_expect: 3
 autoencrypt: true
-consul_port: 8600
 consul_domain: consul
 consul_data_dir: /opt/consul
 connect_enabled: true
@@ -71,12 +70,11 @@ verify_incoming: true
 verify_outgoing: true
 verify_server_hostname: false
 dns_port: 8600
+consul_server_ips: ["100.80.157.86", "100.74.114.22", "100.102.57.28"]
 recursor_dns:
   - "100.100.100.100"
   - "1.1.1.1"
   - "8.8.8.8"
-server_ips: []
-
 # DNS configuration parameters
 allow_stale: true
 node_ttl: "30s"
@@ -99,6 +97,7 @@ consul_certs_dir: "{{ consul_data_dir }}/agent-certs"
 
 # Vault variables for vault agent
 vault_agent_enabled: true
+vault_addr: 100.110.97.36:8200
 vault_version: 1.13.2
 vault_zip_url: "{{ hashicorp_releases_url }}/vault/{{ vault_version }}/vault_{{ vault_version }}_linux_{{ arch[ansible_architecture] }}.zip" # noqa yaml
 vault_agent_config_dir: /etc/vault-agent.d
