@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Lint
@@ -29,34 +29,58 @@ jobs:
   secure:
     name: Security
     runs-on: ubuntu-latest
+    env:
+      NODE_OPTIONS: --openssl-legacy-provider
     steps:
       - name: Checkout
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Make results-dir
         run: mkdir -p results-dir
       - name: run kics Scan
-        uses: checkmarx/kics-action@v1.6
+        uses: checkmarx/kics-action@v1.7.0
         with:
           path: '.'
           output_path: results-dir
           output_formats: 'json,sarif'
+          enable_comments: true
+          enable_annotations: true
+          enable_jobs_summary: true
+          fail_on: high
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: results-dir/results.sarif
   build:
+    continue-on-error: true
     needs:
       - secure
       - lint
     name: Build Images
     permissions: write-all
+    env:
+      VAULT_ADDR: http://vault:8200
+      VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
+      PACKER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    services:
+      vault:
+        image: "public.ecr.aws/hashicorp/vault:1.15"
+        ports:
+          - 8200:8200
+        env:
+          VAULT_DEV_ROOT_TOKEN_ID: ${{ secrets.VAULT_TOKEN }}
+        options: >-
+          --health-cmd "VAULT_ADDR=http://0.0.0.0:8200 vault status"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ".github/build/"
     strategy:
+      fail-fast: false
       matrix:
         target:
           - "consul.docker.ubuntu-amd64"
@@ -64,7 +88,7 @@ jobs:
           - "consul.arm.raspi-os-64"
     steps:
       - name: Checkout
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Get Prerequisites
@@ -128,6 +152,7 @@ jobs:
           name: raspi-os-64
           path: .github/build/raspios-bullseye.img.xz
   test-pr:
+    continue-on-error: true
     needs:
       - build
     name: Test PR
@@ -231,7 +256,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Get os image

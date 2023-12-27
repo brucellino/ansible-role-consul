@@ -21,6 +21,7 @@
 
 - name: Install
   ansible.builtin.include_tasks: install.yml
+  tags: ['installed']
 
 - name: Vault Agent
   ansible.builtin.include_tasks: vault-agent.yml
@@ -30,6 +31,7 @@
 - name: User
   ansible.builtin.include_tasks: user.yml
   when: add_default_user | default('false') | bool
+  tags: ['user']
 
 # - name: System
 #   ansible.builtin.include_tasks: system.yml
@@ -39,13 +41,12 @@
 
 - name: Configure
   ansible.builtin.include_tasks: configure.yml
-  tags:
-    - configure
+  tags: ['configure']
 
-# - name: Resolve conf
-#   ansible.builtin.include_tasks: resolveconf.yml
-#   tags: ['resolveconf']
-#   when: consul_port > 1024
+- name: Resolve conf
+  ansible.builtin.include_tasks: resolveconf.yml
+  tags: ['resolveconf']
+  when: consul_port > 1024
 
 - name: Configure Systemd services
   ansible.builtin.include_tasks: service.yml

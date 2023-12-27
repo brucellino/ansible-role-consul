@@ -1,6 +1,37 @@
 ---
 # tasks to configure dns resolution
-- name: Ensure resolveconf dir
+- name: Configure DNS servers
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/resolved.conf
+    regexp: '^.*DNS=.*$'
+    state: present
+    line: "#DNS=100.100.100.100 1.1.1.1"
+    backrefs: false
+    insertafter: "^[Resolve]$"
+    create: false
+    backup: true
+    firstmatch: true
+    mode: "0644"
+    owner: root
+    group: root
+
+- name: Resolve | Configure DNS Search
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/resolved.conf
+    regexp: '^.*Domains=.*$'
+    state: present
+    line: "#Domains=~orca-ordinal.ts.net"
+    backrefs: false
+    insertafter: "^.*DNS=.*$"
+    create: false
+    backup: true
+    firstmatch: true
+    mode: "0644"
+    owner: root
+    group: root
+
+
+- name: Resolve | Ensure resolveconf dir
   become: true
   ansible.builtin.file:
     path: /etc/systemd/resolved.conf.d/
@@ -12,20 +43,55 @@
     - resolved
 
 # copy consul consul resolved configuration
-- name: Copy consul resolved configuration
+- name: Resolve | Template consul resolved configuration
   become: true
-  ansible.builtin.copy:
+  ansible.builtin.template:
     dest: /etc/systemd/resolved.conf.d/consul.conf
-    src: etc/systemd/resolved.conf.d/consul.conf
+    src: etc/systemd/resolved.conf.d/consul.conf.j2
     force: true
     mode: "0644"
     owner: systemd-resolve
     group: root
-  notify: restart resolved
+  notify: Restart resolved
   tags:
     - resolved
 
-- name: Enable resolved
+- name: Resolve | Ensure stub directory
+  ansible.builtin.file:
+    path: /run/systemd/resolve/
+    state: directory
+    mode: "0777"
+    owner: root
+    group: root
+
+- name: Resolve | Template resolveconf stub
+  ansible.builtin.template:
+    dest: /run/systemd/resolve/stub-resolv.conf
+    src: run/systemd/resolve/stub-resolv.conf.j2
+    mode: "0644"
+    owner: root
+    group: root
+
+- name: Resolve | Check state of resolve.conf
+  ansible.builtin.stat:
+    path: /etc/resolv.conf
+    follow: true
+  register: resolvconf_stat
+
+- name: Resolve | Remove resolv.conf file
+  when: resolveconf_stat.islnk is not defined
+  ansible.builtin.file:
+    path: /etc/resolv.conf
+    state: absent
+
+- name: Resolve | Ensure resolvconf is a symlink
+  ansible.builtin.file:
+    path: /etc/resolv.conf
+    state: link
+    src: /run/systemd/resolve/stub-resolv.conf
+    recurse: false
+
+- name: Resolve | Enable resolved
   become: true
   ansible.builtin.systemd:
     name: systemd-resolved
@@ -34,7 +100,7 @@
   tags:
     - resolved
 
-- name: Restart resolved
+- name: Resolve | Restart resolved
   become: true
   ansible.builtin.systemd:
     name: systemd-resolved

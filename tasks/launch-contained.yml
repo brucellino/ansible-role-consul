@@ -1,12 +1,12 @@
 ---
 # tasks/launch-contained.yml
 # Tasks responsible for launching consul in the relevant environment
-- name: Get dumb-init
+- name: Launch | Get dumb-init
   ansible.builtin.package:
     name: dumb-init
     state: present
 
-- name: Template startup script
+- name: Launch | Template startup script
   ansible.builtin.template:
     src: entrypoint.sh.j2
     dest: /entrypoint.sh

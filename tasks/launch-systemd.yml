@@ -1,7 +1,7 @@
 ---
 # tasks/launch-systemd.yml
 # Tasks responsible for launching consul with systemd
-- name: Template systemd unit
+- name: Launch | Template systemd unit
   ansible.builtin.template:
     src: lib/systemd/system/consul.service.j2
     dest: /lib/systemd/system/consul.service
@@ -13,7 +13,7 @@
     variable_start_string: "[["
     # validate: systemd-analyze validate %s
   notify: consul-service
-- name: Consul service
+- name: Launch | Consul service
   ansible.builtin.systemd:
     name: consul
     state: started

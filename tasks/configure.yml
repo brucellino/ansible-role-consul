@@ -1,5 +1,5 @@
 ---
-- name: Create scripts directory
+- name: Configure | Create scripts directory
   ansible.builtin.file:
     path: "{{ consul_data_dir }}/scripts"
     state: directory
@@ -7,7 +7,7 @@
     owner: consul
     group: consul
 
-- name: Deliver Ansible bootstrap script
+- name: Configure | Deliver Ansible bootstrap script
   ansible.builtin.copy:
     dest: "{{ consul_data_dir }}/scripts/ansible-bootstrap.sh"
     src: opt/consul/scripts/ansible-bootstrap.sh
@@ -18,7 +18,7 @@
   tags:
     - watches
 
-- name: Ensure not server when not server
+- name: Configure | Ensure not server when not server
   ansible.builtin.file:
     path: "{{ consul_config_dir }}/server.hcl"
     state: absent

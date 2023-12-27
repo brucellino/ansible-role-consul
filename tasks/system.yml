@@ -1,5 +1,5 @@
 ---
-- name: Template WPA Supplicant configuration
+- name: System | Template WPA Supplicant configuration
   ansible.builtin.template:
     src: etc/wpa_supplicant/wpa_supplicant.conf.j2
     dest: /etc/wpa_supplicant/wpa_supplicant.conf
@@ -7,16 +7,16 @@
     owner: root
     group: root
 
-- name: Set timezone
+- name: System | Set timezone
   community.general.timezone:
     name: "{{ timezone }}"
     hwclock: local
 
-- name: Unblock rfkill
+- name: System | Unblock rfkill
   ansible.builtin.command: rfkill unblock wifi
   changed_when: false
 
-- name: Get all wlan rfkill configs
+- name: System | Get all wlan rfkill configs
   ansible.builtin.find:
     paths: /var/lib/systemd/rfkill/
     patterns: "*wlan"
@@ -24,7 +24,7 @@
     recurse: false
   register: wlan_rfkill_files
 
-- name: Disable wlan rfkill # noqa: avoid-implicit
+- name: System | Disable wlan rfkill # noqa: avoid-implicit
   ansible.builtin.copy:
     dest: "{{ item.path }}"
     content: 0

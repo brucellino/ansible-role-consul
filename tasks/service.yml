@@ -1,7 +1,7 @@
 ---
 # roles/consul/service.yml
 # Tasks that configure the systemd unit and start the service
-- name: Ensure that systemd dir is present
+- name: Service | Ensure that systemd dir is present
   become: true
   ansible.builtin.file:
     path: /usr/lib/systemd/system
@@ -10,7 +10,7 @@
     group: root
     mode: "0644"
 
-- name: Template systemd unit
+- name: Service | Template systemd unit
   become: true
   ansible.builtin.template:
     src: etc/systemd/system/consul.service.j2
@@ -22,7 +22,7 @@
     variable_end_string: "]]"
   notify: Reload consul
 
-- name: Add Custom DNS template
+- name: Service | Add Custom DNS template
   become: true
   ansible.builtin.template:
     src: etc/resolv.conf.j2
@@ -45,7 +45,7 @@
 #   systemd:
 #     daemon_reload: true
 
-- name: Ensure consul is enabled
+- name: Service | Ensure consul is enabled
   become: true
   ansible.builtin.systemd:
     name: consul
@@ -54,7 +54,7 @@
     masked: false
     daemon_reload: true
 
-- name: Start Consul service
+- name: Service | Start Consul service
   become: true
   ansible.builtin.service:
     name: consul

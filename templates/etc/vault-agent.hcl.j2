@@ -25,7 +25,7 @@ auto_auth {
 {% endif %}
 
 vault {
-  address = "http://sense:8200"
+  address = "http://{{ vault_addr }}"
 }
 
 # Template consul configuration and CA cert
