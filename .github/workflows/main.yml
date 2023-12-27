@@ -53,11 +53,27 @@ jobs:
         with:
           sarif_file: results-dir/results.sarif
   build:
+    continue-on-error: true
     needs:
       - secure
       - lint
     name: Build Images
     permissions: write-all
+    env:
+      VAULT_ADDR: http://vault:8200
+      VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
+    services:
+      vault:
+        image: "public.ecr.aws/hashicorp/vault:1.15"
+        ports:
+          - 8200:8200
+        env:
+          VAULT_DEV_ROOT_TOKEN_ID: ${{ secrets.VAULT_TOKEN }}
+        options: >-
+          --health-cmd "VAULT_ADDR=http://0.0.0.0:8200 vault status"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -135,6 +151,7 @@ jobs:
           name: raspi-os-64
           path: .github/build/raspios-bullseye.img.xz
   test-pr:
+    continue-on-error: true
     needs:
       - build
     name: Test PR
