@@ -1,6 +1,6 @@
 ---
 # Vault agent configuration
-- name: Get Vault
+- name: Vault Agent | Get Vault
   become: true
   ansible.builtin.unarchive:
     src: "{{ vault_zip_url }}"
@@ -14,7 +14,7 @@
     owner: root
     group: root
 
-- name: Ensure Vault Agent configuration directory
+- name: Vault Agent | Ensure Vault Agent configuration directory
   ansible.builtin.file:
     path: "{{ vault_agent_config_dir }}"
     state: directory
@@ -22,7 +22,7 @@
     owner: root
     group: root
 
-- name: Get Role id
+- name: Vault Agent | Get Role id
   delegate_to: localhost
   become: false
   ansible.builtin.uri:
@@ -34,7 +34,7 @@
       X-Vault-Token: "{{ lookup('env', 'VAULT_TOKEN') }}"
   register: role_id
 
-- name: Deliver role id
+- name: Vault Agent | Deliver role id
   ansible.builtin.copy:
     dest: "{{ vault_agent_config_dir }}/vault_roleid"
     content: "{{ role_id.json.data.role_id }}"
@@ -44,7 +44,7 @@
     owner: root
     group: root
 
-- name: Template Vault Agent template
+- name: Vault Agent | Template Vault Agent template
   ansible.builtin.template:
     src: etc/vault-agent.hcl.j2
     dest: "{{ vault_agent_config_dir }}/vault-agent.hcl"
@@ -53,7 +53,7 @@
     owner: root
     group: root
 
-- name: Deliver agent templates
+- name: Vault Agent | Deliver agent templates
   ansible.builtin.template:
     dest: "{{ vault_agent_config_dir }}/{{ item.template }}.tmpl"
     src: "etc/vault.d/{{ item.template }}.tmpl.j2"
@@ -65,7 +65,7 @@
     variable_end_string: "]]"
   loop: "{{ vault_agent_templates }}"
 
-- name: Systemd Unit
+- name: Vault Agent | Systemd Unit
   when: not contained.stat.exists
   block:
     - name: Template Vault Agent systemd unit

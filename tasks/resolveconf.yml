@@ -15,7 +15,7 @@
     owner: root
     group: root
 
-- name: Configure DNS Search
+- name: Resolve | Configure DNS Search
   ansible.builtin.lineinfile:
     path: /etc/systemd/resolved.conf
     regexp: '^.*Domains=.*$'
@@ -31,7 +31,7 @@
     group: root
 
 
-- name: Ensure resolveconf dir
+- name: Resolve | Ensure resolveconf dir
   become: true
   ansible.builtin.file:
     path: /etc/systemd/resolved.conf.d/
@@ -43,7 +43,7 @@
     - resolved
 
 # copy consul consul resolved configuration
-- name: Template consul resolved configuration
+- name: Resolve | Template consul resolved configuration
   become: true
   ansible.builtin.template:
     dest: /etc/systemd/resolved.conf.d/consul.conf
@@ -56,7 +56,7 @@
   tags:
     - resolved
 
-- name: Ensure stub directory
+- name: Resolve | Ensure stub directory
   ansible.builtin.file:
     path: /run/systemd/resolve/
     state: directory
@@ -64,7 +64,7 @@
     owner: root
     group: root
 
-- name: Template resolveconf stub
+- name: Resolve | Template resolveconf stub
   ansible.builtin.template:
     dest: /run/systemd/resolve/stub-resolv.conf
     src: run/systemd/resolve/stub-resolv.conf.j2
@@ -72,26 +72,26 @@
     owner: root
     group: root
 
-- name: Check state of resolve.conf
+- name: Resolve | Check state of resolve.conf
   ansible.builtin.stat:
     path: /etc/resolv.conf
     follow: true
   register: resolvconf_stat
 
-- name: Remove resolv.conf file
+- name: Resolve | Remove resolv.conf file
   when: resolveconf_stat.islnk is not defined
   ansible.builtin.file:
     path: /etc/resolv.conf
     state: absent
 
-- name: Ensure resolvconf is a symlink
+- name: Resolve | Ensure resolvconf is a symlink
   ansible.builtin.file:
     path: /etc/resolv.conf
     state: link
     src: /run/systemd/resolve/stub-resolv.conf
     recurse: false
 
-- name: Enable resolved
+- name: Resolve | Enable resolved
   become: true
   ansible.builtin.systemd:
     name: systemd-resolved
@@ -100,7 +100,7 @@
   tags:
     - resolved
 
-- name: Restart resolved
+- name: Resolve | Restart resolved
   become: true
   ansible.builtin.systemd:
     name: systemd-resolved

@@ -1,10 +1,10 @@
 ---
-- name: Add prerequisites
+- name: Install | Add prerequisites
   ansible.builtin.package:
     name: "{{ prerequisites[ansible_distribution_release] }}"
     state: present
 
-- name: Ensure Consul is executable
+- name: Install | Ensure Consul is executable
   block:
     - name: Test execution
       ansible.builtin.command: consul --version
@@ -18,13 +18,13 @@
         fail_msg: "Consul was not successfully installed"
   rescue:
     # Ensure the correct version is present, removing the existing one
-    - name: Ensure old consul is gone
+    - name: Install | Ensure old consul is gone
       become: true
       ansible.builtin.file:
         path: /bin/consul
         state: absent
 
-    - name: Unpack Consul
+    - name: Install | Unpack Consul
       become: true
       ansible.builtin.unarchive:
         src: "{{ consul_zip_url }}"
@@ -34,7 +34,7 @@
         remote_src: true
         mode: "0777"
 
-- name: Give consul low port permissions
+- name: Install | Give consul low port permissions
   become: true
   community.general.capabilities:
     path: /bin/consul
@@ -42,7 +42,7 @@
     state: present
   when: consul_port < 1024
 
-- name: Ensure Consul Template is executable
+- name: Install | Ensure Consul Template is executable
   block:
     - name: Test execution
       ansible.builtin.command: consul-template --version
@@ -63,7 +63,7 @@
         path: /bin/consul-template
         state: absent
 
-    - name: Unpack Consul Template
+    - name: Install | Unpack Consul Template
       become: true
       ansible.builtin.unarchive:
         src: "{{ consul_template_url }}/{{ consul_template_version }}/consul-template_{{ consul_template_version }}_linux_{{ arch[ansible_architecture] }}.zip" # noqa yaml[line-length]
@@ -73,7 +73,7 @@
         remote_src: true
         mode: "0777"
 
-- name: Ensure config directory
+- name: Install | Ensure config directory
   ansible.builtin.file:
     path: "{{ consul_config_dir }}"
     state: directory
@@ -81,13 +81,13 @@
     owner: root
     group: root
 
-- name: Ensure consul group
+- name: Install | Ensure consul group
   become: true
   ansible.builtin.group:
     name: consul
     state: present
 
-- name: Ensure consul user
+- name: Install | Ensure consul user
   become: true
   ansible.builtin.user:
     name: consul
@@ -98,7 +98,7 @@
     create_home: false
     generate_ssh_key: false
 
-- name: Ensure agent data directory
+- name: Install | Ensure agent data directory
   become: true
   ansible.builtin.file:
     path: "{{ consul_data_dir }}"
@@ -107,7 +107,7 @@
     group: consul
     mode: "0777"
 
-- name: Ensure agent certificate directory
+- name: Install | Ensure agent certificate directory
   become: true
   ansible.builtin.file:
     path: "{{ consul_certs_dir }}"
@@ -116,7 +116,7 @@
     group: consul
     mode: "0777"
 
-- name: Ensure Logging directory
+- name: Install | Ensure Logging directory
   become: true
   ansible.builtin.file:
     path: "{{ consul_log_dir }}"
