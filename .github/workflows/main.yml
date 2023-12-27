@@ -63,6 +63,7 @@ jobs:
       run:
         working-directory: ".github/build/"
     strategy:
+      fail-fast: false
       matrix:
         target:
           - "consul.docker.ubuntu-amd64"
