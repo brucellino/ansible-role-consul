@@ -62,6 +62,7 @@ jobs:
     env:
       VAULT_ADDR: http://vault:8200
       VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
+      PACKER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     services:
       vault:
         image: "public.ecr.aws/hashicorp/vault:1.15"
