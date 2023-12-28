@@ -1,3 +1,16 @@
+# [2.1.0](https://github.com/brucellino/ansible-role-consul/compare/v2.0.0...v2.1.0) (2023-12-27)
+
+
+### Bug Fixes
+
+* **defaults:** add jammy prerequisite defaults ([887e18f](https://github.com/brucellino/ansible-role-consul/commit/887e18ff9cf32ac84b7286fa85ed57be70a0a68f))
+* **vault-agent:** fix path to vault in template ([09c023d](https://github.com/brucellino/ansible-role-consul/commit/09c023d5e062b5ea5f11007ac110385ce3658ea0))
+
+
+### Features
+
+* enable systemd resolved stub ([#115](https://github.com/brucellino/ansible-role-consul/issues/115)) ([cec247c](https://github.com/brucellino/ansible-role-consul/commit/cec247c957e5add5530d86f26f3a98d771a1d7ce))
+
 # [2.0.0](https://github.com/brucellino/ansible-role-consul/compare/v1.4.4...v2.0.0) (2023-01-15)
 
 
