@@ -65,7 +65,7 @@ jobs:
       PACKER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     services:
       vault:
-        image: "public.ecr.aws/hashicorp/vault:1.18"
+        image: "public.ecr.aws/hashicorp/vault:1.19"
         ports:
           - 8200:8200
         env:
@@ -159,7 +159,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       vault:
-        image: "public.ecr.aws/hashicorp/vault:1.18"
+        image: "public.ecr.aws/hashicorp/vault:1.19"
         ports:
           - 8200:8200
         env:
@@ -205,7 +205,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       vault:
-        image: "public.ecr.aws/hashicorp/vault:1.18"
+        image: "public.ecr.aws/hashicorp/vault:1.19"
         ports:
           - 8200:8200
         env:
