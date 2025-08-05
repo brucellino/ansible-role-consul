@@ -21,17 +21,20 @@
 
 - name: Install
   ansible.builtin.include_tasks: install.yml
-  tags: ['installed']
+  tags:
+    - installed
 
 - name: Vault Agent
   ansible.builtin.include_tasks: vault-agent.yml
   when: vault_agent_enabled
-  tags: ['vault']
+  tags:
+    - vault
 
 - name: User
   ansible.builtin.include_tasks: user.yml
   when: add_default_user | default('false') | bool
-  tags: ['user']
+  tags:
+    - user
 
 # - name: System
 #   ansible.builtin.include_tasks: system.yml

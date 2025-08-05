@@ -32,4 +32,4 @@
       verify_incoming: true
       verify_outgoing: true
   tags:
-    - "agents"
+    - agents

@@ -13,12 +13,12 @@ jobs:
     strategy:
       matrix:
         target:
-          - "consul.docker.ubuntu.amd64"
-          - "consul.docker.ubuntu.arm64"
+          - consul.docker.ubuntu-amd64
+          - consul.arm.raspi-os-64
     name: Publish image version
     defaults:
       run:
-        working-directory: ".github/build/"
+        working-directory: .github/build/
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

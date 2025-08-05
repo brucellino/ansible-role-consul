@@ -46,6 +46,15 @@ prerequisites:
     - unzip
     - vim
     - bind9utils
+  bookworm:
+    - curl
+    - gnupg
+    - gzip
+    - jq
+    - tmux
+    - unzip
+    - vim
+    - bind9utils
 
 arch:
   x86_64: amd64
@@ -53,7 +62,7 @@ arch:
   armv6l: arm
 
 # Consul defaults
-consul_version: 1.15.2
+consul_version: 1.19.2
 hashicorp_releases_url: "https://releases.hashicorp.com" # noqa yaml[line-length]
 consul_zip_url: "{{ hashicorp_releases_url }}/consul/{{ consul_version }}/consul_{{ consul_version }}_linux_{{ arch[ansible_architecture] }}.zip" # noqa yaml
 consul_url: "{{ hashicorp_releases_url }}/consul"
@@ -70,7 +79,7 @@ verify_incoming: true
 verify_outgoing: true
 verify_server_hostname: false
 dns_port: 8600
-consul_server_ips: ["100.80.157.86", "100.74.114.22", "100.102.57.28"]
+consul_server_ips: ["100.80.157.86", "100.97.191.24", "100.102.57.28"]
 recursor_dns:
   - "100.100.100.100"
   - "1.1.1.1"

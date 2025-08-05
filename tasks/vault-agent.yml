@@ -22,6 +22,7 @@
     owner: root
     group: root
 
+# trunk-ignore(checkov/CKV2_ANSIBLE_1)
 - name: Vault Agent | Get Role id
   delegate_to: localhost
   become: false
