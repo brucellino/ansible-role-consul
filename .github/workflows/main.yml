@@ -147,7 +147,7 @@ jobs:
         run: sudo xz -T 9 --compress raspios-bullseye.img
       - name: Upload artifact
         if: ${{ matrix.target == 'consul.arm.raspi-os-64' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: raspi-os-64
           path: .github/build/raspios-bullseye.img.xz
@@ -260,7 +260,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Get os image
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: raspi-os-64
 
