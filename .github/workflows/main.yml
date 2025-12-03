@@ -39,7 +39,7 @@ jobs:
       - name: Make results-dir
         run: mkdir -p results-dir
       - name: run kics Scan
-        uses: checkmarx/kics-action@v2.1.16
+        uses: checkmarx/kics-action@v2.1.17
         with:
           path: '.'
           output_path: results-dir
