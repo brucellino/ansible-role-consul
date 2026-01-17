@@ -1,0 +1,10 @@
+[env]
+_.python.venv = { path = ".venv", create = true }
+
+[tools]
+python = "3.13"
+uv = "latest"
+node = "24"
+
+[tasks]
+install_deps = "uv pip install pre-commit ansible-core detect-secrets"
