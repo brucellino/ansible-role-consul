@@ -100,6 +100,15 @@
   tags:
     - resolved
 
+- name: Configure Docker DNS resolution
+  ansible.builtin.template:
+    dest: /etc/docker/daemon.json
+    src: etc/docker/daemon.json.j2
+    mode: "0644"
+    owner: root
+    group: root
+  notify: Restart Docker
+
 - name: Resolve | Restart resolved
   become: true
   ansible.builtin.systemd:
