@@ -91,25 +91,27 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+      - name: Mise en Place
+        uses: jdx/mise-action@v2
+        with:
+          install: true
+          experimental: true
+          cache: true
+      - name: Trust and activate mise
+        run: |
+          mise trust
+          eval "$(mise activate)"
+          mise tasks run install_deps
       - name: Get Prerequisites
         run: |
           sudo apt-get install -y \
           binfmt-support \
           gzip \
-          python3 \
-          python3-pip \
-          qemu \
+          qemu-system \
           qemu-user-static
           unzip \
-      - name: Add Ansible
-        run: sudo -H pip3 install ansible
-      - name: Get Packer
-        run: |
-          curl -fL https://releases.hashicorp.com/packer/1.8.4/packer_1.8.4_linux_amd64.zip | gunzip ->packer && \
-          chmod u+x packer && \
-          ./packer -version
       - name: Init Packer
-        run: ./packer init .
+        run: packer init .
       - name: Build Image (PR)
         shell: 'script -q -e -c "bash {0}"'
         if: ${{ github.event_name == 'pull_request' }}
@@ -120,7 +122,7 @@ jobs:
           else
             run_as=""
           fi
-          eval "$run_as" ./packer build \
+          eval "$run_as" packer build \
             -var roles_path="${GITHUB_WORKSPACE}/../" \
             -var docker_password=${{ secrets.GITHUB_TOKEN }} \
             -var tag_version="pr-${{ github.event.pull_request.number }}" \
@@ -136,7 +138,7 @@ jobs:
           else
             run_as=""
           fi
-          eval "$run_as" ./packer build \
+          eval "$run_as" packer build \
             -var roles_path="${GITHUB_WORKSPACE}/../" \
             -var docker_password=${{ secrets.GITHUB_TOKEN }} \
             -var tag_version="latest" \
@@ -176,25 +178,31 @@ jobs:
         VAULT_ADDR: http://vault:8200
         VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
     steps:
-      - name: Get Vault client
+      - name: Mise en Place
+        uses: jdx/mise-action@v2
+        with:
+          install: true
+          experimental: true
+          cache: true
+      - name: Trust and activate mise
         run: |
-          curl -fL https://releases.hashicorp.com/vault/1.11.0/vault_1.11.0_linux_amd64.zip \
-          | gunzip -> vault ; \
-          chmod u+x vault
+          mise trust
+          eval "$(mise activate)"
+          mise tasks run install_deps
       - name: Vault login
-        run: ./vault login ${{ secrets.VAULT_TOKEN }}
+        run: vault login ${{ secrets.VAULT_TOKEN }}
       - name: Enable KV engine
-        run: ./vault secrets enable --path kv kv-v2
+        run: vault secrets enable --path kv kv-v2
       - name: Create gossip key
-        run: ./vault kv put kv/consul-test gossip_key=$(consul keygen)
+        run: vault kv put kv/consul-test gossip_key=$(consul keygen)
       - name: Create Certificates
         run: consul tls ca create
       - name: Put the certs in the Vault
         run: >-
           cat consul-agent-ca.pem
-          | ./vault kv patch kv/consul-test ca_cert=- ;
+          | vault kv patch kv/consul-test ca_cert=- ;
           cat consul-agent-ca-key.pem
-          | ./vault kv patch kv/consul-test ca_key=-
+          | vault kv patch kv/consul-test ca_key=-
       - name: Create server certs
         run: consul tls cert create -server -dc dc1 -domain consul
 
@@ -222,28 +230,33 @@ jobs:
         VAULT_ADDR: http://vault:8200
         VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
     steps:
-      - name: Get Vault client
+      - name: Mise en Place
+        uses: jdx/mise-action@v2
+        with:
+          install: true
+          experimental: true
+          cache: true
+      - name: Trust and activate mise
         run: |
-          curl -fL https://releases.hashicorp.com/vault/1.11.0/vault_1.11.0_linux_amd64.zip \
-          | gunzip -> vault ; \
-          chmod u+x vault
+          mise trust
+          eval "$(mise activate)"
+          mise tasks run install_deps
       - name: Vault login
-        run: ./vault login ${{ secrets.VAULT_TOKEN }}
+        run: vault login ${{ secrets.VAULT_TOKEN }}
       - name: Enable KV engine
-        run: ./vault secrets enable --path kv kv-v2
+        run: vault secrets enable --path kv kv-v2
       - name: Create gossip key
-        run: ./vault kv put kv/consul-test gossip_key=$(consul keygen)
+        run: vault kv put kv/consul-test gossip_key=$(consul keygen)
       - name: Create Certificates
         run: consul tls ca create
       - name: Put the certs in the Vault
         run: >-
           cat consul-agent-ca.pem
-          | ./vault kv patch kv/consul-test ca_cert=- ;
+          | vault kv patch kv/consul-test ca_cert=- ;
           cat consul-agent-ca-key.pem
-          | ./vault kv patch kv/consul-test ca_key=-
+          | vault kv patch kv/consul-test ca_key=-
       - name: Create server certs
         run: consul tls cert create -server -dc dc1 -domain consul
-
 
   release:
     needs:
@@ -263,17 +276,25 @@ jobs:
         uses: actions/download-artifact@v7
         with:
           name: raspi-os-64
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
+      - name: Mise en Place
+        uses: jdx/mise-action@v2
         with:
-          node-version: 'lts/*'
+          install: true
+          experimental: true
+          cache: true
+      - name: Trust and activate mise
+        run: |
+          mise trust
+          eval "$(mise activate)"
+          mise tasks run install_deps
+
       - name: add semantic release plugins
         run: |
-          npm install -D '@semantic-release/changelog' \
+          npm install -D semantic-release \
+                         '@semantic-release/changelog' \
                          '@semantic-release/github' \
                          '@semantic-release/git'
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
+        run: semantic-release
