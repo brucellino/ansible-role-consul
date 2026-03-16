@@ -2,3 +2,5 @@
 DNS=127.0.0.1:{{ consul_port }}
 DNSSEC=false
 Domains=~{{ consul_domain }}
+DNSStubListener=yes
+DNSStubListenerExtra=172.17.0.1
