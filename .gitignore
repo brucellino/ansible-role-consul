@@ -2,3 +2,5 @@ trivy
 *.img
 *.xz
 .vscode/
+.ansible
+.trunk

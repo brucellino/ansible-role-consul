@@ -62,7 +62,13 @@ arch:
   armv6l: arm
 
 # Consul defaults
-consul_version: 1.19.2
+consul_version_ceiling:
+  armv6l: 1.17.1 # last release known to work for armv6l
+  aarch64: # No limit set
+  x86_64: # No limit set
+  amd64: # No limit set
+  arm64: # No limit set
+consul_version: 1.21.1
 hashicorp_releases_url: "https://releases.hashicorp.com" # noqa yaml[line-length]
 consul_zip_url: "{{ hashicorp_releases_url }}/consul/{{ consul_version }}/consul_{{ consul_version }}_linux_{{ arch[ansible_architecture] }}.zip" # noqa yaml
 consul_url: "{{ hashicorp_releases_url }}/consul"
