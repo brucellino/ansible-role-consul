@@ -2,9 +2,13 @@
 _.python.venv = { path = ".venv", create = true }
 
 [tools]
+consul = "1.22.5"
 python = "3.13"
 uv = "latest"
 node = "24"
+packer = "1.15.0"
+prek = "latest"
+vault = "1.21.4"
 
 [tasks]
-install_deps = "uv pip install pre-commit ansible-core detect-secrets"
+install_deps = "uv pip install ansible-core detect-secrets"

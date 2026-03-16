@@ -4,6 +4,14 @@
     name: "{{ prerequisites[ansible_distribution_release] }}"
     state: present
 
+- name: Check if the declared version is greater than the version ceiling for this arch
+  ansible.builtin.set_fact:
+    broken_ceiling: "{{ consul_version is version_compare(consul_version_ceiling[ansible_facts.machine]) | bool }}"
+
+- name: Check version ceiling broken
+  ansible.builtin.debug:
+    msg: "Version ceiling broken: {{ broken_ceiling }}"
+
 - name: Install | Ensure Consul is executable
   block:
     - name: Test execution

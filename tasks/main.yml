@@ -14,11 +14,6 @@
     name: bind9utils
     state: present
 
-# - name: Lookup secrets
-#   delegate_to: localhost
-#   ansible.builtin.set_fact: # noqa: jinja[invalid]
-#     secrets: "{{ lookup('hashi_vault', 'secret=kv/data/hashiathome validate_certs=false') }}"  # pragma: allowlist secret
-
 - name: Install
   ansible.builtin.include_tasks: install.yml
   tags:
