@@ -1,7 +1,7 @@
 ---
 - name: Install | Add prerequisites
   ansible.builtin.package:
-    name: "{{ prerequisites[distribution_release] }}"
+    name: "{{ prerequisites[ansible_facts.distribution_release] }}"
     state: present
 
 - name: Check if the declared version is greater than the version ceiling for this arch
