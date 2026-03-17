@@ -17,13 +17,12 @@
 
 - name: Check desired version
   ansible.builtin.debug:
-    msg: >-
-      "{{ consul_version_desired }}"
+    msg: consul_version_desired
 
 - name: Check if the ceiling is broken by comparing the ceiling to the declared version
   ansible.builtin.debug:
     msg: >-
-      "{{ consul_version_desired is version_compare(consul_version_ceiling[ansible_facts.machine], '<=') }}"
+      "{{ consul_version_desired is version('consul_version_ceiling[ansible_facts.machine]', '<=') }}"
 
 - name: Check if the declared version is greater than the version ceiling for this arch
   ansible.builtin.set_fact:
