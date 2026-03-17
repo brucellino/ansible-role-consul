@@ -41,12 +41,12 @@
           consul/
           {{ consul_version_desired }}/
           consul_{{ consul_version_desired }}_linux_
-          {{ arch[ansible_facts.architecture] }}.zip | replace(' ', '')"
+          {{ arch[ansible_facts.architecture] }}.zip"
 
     - name: Install | Unpack Consul
       become: true
       ansible.builtin.unarchive:
-        src: "{{ consul_zip_url }}"
+        src: "{{ consul_zip_url | replace(' ', '')}}"
         dest: /bin/
         owner: root
         group: root
