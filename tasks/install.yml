@@ -3,10 +3,15 @@
   ansible.builtin.package:
     name: "{{ prerequisites[ansible_facts.distribution_release] }}"
     state: present
+
 - name: Check version ceiling
   ansible.builtin.debug:
     msg: >-
-      "Version ceiling for {{ ansible_facts.machine }}: {{ consul_version_ceiling[ansible_facts.machine] | default(consul_version) }}"
+      "{{ consul_version is
+      version_compare(
+      consul_version_ceiling[ansible_facts.machine] | default(consul_version),
+      '<='
+      ) }}"
 
 - name: Check if the declared version is greater than the version ceiling for this arch
   ansible.builtin.set_fact:
