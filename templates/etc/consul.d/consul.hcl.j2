@@ -21,7 +21,7 @@ recursors = ["8.8.8.8"]
 # Advertise on tailscale if it is available
 
 advertise_addr = "{{ GetInterfaceIP \"tailscale0\" }}"
-# Loop over server group entries
+# Loop over server group entries - should be a group lookup
 retry_join = ["bare","ticklish","inky"]
 
 # Enable Consul ACLs

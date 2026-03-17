@@ -70,7 +70,6 @@ consul_version_ceiling:
   arm64: # No limit set
 consul_version: 1.21.1
 hashicorp_releases_url: "https://releases.hashicorp.com" # noqa yaml[line-length]
-consul_zip_url: "{{ hashicorp_releases_url }}/consul/{{ consul_version }}/consul_{{ consul_version }}_linux_{{ arch[ansible_architecture] }}.zip" # noqa yaml
 consul_url: "{{ hashicorp_releases_url }}/consul"
 # Consul Configuration defaults
 consul_config_dir: /etc/consul.d
@@ -85,6 +84,7 @@ verify_incoming: true
 verify_outgoing: true
 verify_server_hostname: false
 dns_port: 8600
+consul_port: 8600
 consul_server_ips: ["100.80.157.86", "100.97.191.24", "100.102.57.28"]
 recursor_dns:
   - "100.100.100.100"

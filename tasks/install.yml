@@ -4,30 +4,13 @@
     name: "{{ prerequisites[ansible_facts.distribution_release] }}"
     state: present
 
-- name: If the version ceiling is defined, use it; otherwise, use the declared version
-  ansible.builtin.debug:
-    msg: >-
-      "{{ consul_version_ceiling[ansible_facts.machine] is defined | ternary(consul_version, consul_version_ceiling[ansible_facts.machine]) }}"
-
 - name: Set desired version to ceiling if defined, else declared version
   ansible.builtin.set_fact:
-    consul_version_desired: consul_version_ceiling[ansible_facts.machine] is defined | ternary(consul_version, consul_version_ceiling[ansible_facts.machine])
-
-- name: Check desired version
-  ansible.builtin.debug:
-    var: consul_version_desired
-
-- name: Check if the ceiling is broken by comparing the ceiling to the declared version
-  ansible.builtin.debug:
-    var: consul_version_desired is version('consul_version_ceiling[ansible_facts.machine]', '<=') | bool
-
-- name: Set broken ceiling var
-  ansible.builtin.set_fact:
-    broken_ceiling: consul_version_desired is version('consul_version_ceiling[ansible_facts.machine]', '<=') | bool
-
-- name: Check version ceiling broken
-  ansible.builtin.debug:
-    msg: "Version ceiling broken: {{ broken_ceiling }}"
+    consul_version_desired: >
+      "{{
+      consul_version_ceiling[ansible_facts.machine] is defined |
+      ternary(consul_version, consul_version_ceiling[ansible_facts.machine])
+      }}"
 
 - name: Install | Ensure Consul is executable
   block:
@@ -38,8 +21,8 @@
     - name: Test assertion
       ansible.builtin.assert:
         that:
-          - "consul_version in consul_version_test.stdout"
-        success_msg: "Consul version {{ consul_version }} is ready"
+          - "consul_version_desired in consul_version_test.stdout"
+        success_msg: "Consul version {{ consul_version_desired }} is ready"
         fail_msg: "Consul was not successfully installed"
   rescue:
     # Ensure the correct version is present, removing the existing one
@@ -48,6 +31,14 @@
       ansible.builtin.file:
         path: /bin/consul
         state: absent
+    - name: Set Consul URL
+      ansible.builtin.set_fact:
+        consul_zip_url: >-
+          "{{ hashicorp_releases_url }}/
+          consul/
+          {{ consul_version_desired }}/
+          consul_{{ consul_version_desired }}_linux_
+          {{ arch[ansible_facts.architecture] }}.zip"
 
     - name: Install | Unpack Consul
       become: true
@@ -91,7 +82,7 @@
     - name: Install | Unpack Consul Template
       become: true
       ansible.builtin.unarchive:
-        src: "{{ consul_template_url }}/{{ consul_template_version }}/consul-template_{{ consul_template_version }}_linux_{{ arch[ansible_architecture] }}.zip" # noqa yaml[line-length]
+        src: "{{ consul_template_url }}/{{ consul_template_version }}/consul-template_{{ consul_template_version }}_linux_{{ arch[ansible_facts.architecture] }}.zip" # noqa yaml[line-length]
         dest: /bin/
         owner: root
         group: root
@@ -118,7 +109,7 @@
     name: consul
     state: present
     group: consul
-    groups: "{{ consul_user_groups[ansible_distribution | lower] }}"
+    groups: "{{ consul_user_groups[ansible_facts.distribution | lower] }}"
     append: true
     create_home: false
     generate_ssh_key: false

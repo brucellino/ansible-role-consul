@@ -31,10 +31,8 @@ jobs:
           install: true
           experimental: true
           cache: true
-      - name: Trust and activate mise
+      - name: Add deps
         run: |
-          mise trust
-          eval "$(mise activate)"
           mise tasks run install_deps
       - name: Get Prerequisites
         run: |
