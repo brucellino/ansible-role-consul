@@ -13,31 +13,17 @@
   ansible.builtin.set_fact:
     consul_version_desired: consul_version_ceiling[ansible_facts.machine] is defined | ternary(consul_version, consul_version_ceiling[ansible_facts.machine])
 
-
 - name: Check desired version
   ansible.builtin.debug:
-    msg: consul_version_desired
-
-
-- name: Check if the ceiling is broken by comparing the ceiling to the declared version
-  ansible.builtin.debug:
-    msg: >-
-      "{{ '1.21.1' is version('1.7.1', '<=') }}"
+    var: consul_version_desired
 
 - name: Check if the ceiling is broken by comparing the ceiling to the declared version
   ansible.builtin.debug:
-    msg: >-
-      "{{ consul_version_desired is version('consul_version_ceiling[ansible_facts.machine]', '<=') }}"
+    var: consul_version_desired is version('consul_version_ceiling[ansible_facts.machine]', '<=') | bool
 
-- name: Check if the declared version is greater than the version ceiling for this arch
+- name: Set broken ceiling var
   ansible.builtin.set_fact:
-    broken_ceiling: >-
-      "{{ consul_version is
-      version_compare(
-      consul_version_ceiling[ansible_facts.machine] | default(consul_version),
-      '<='
-      )
-      | bool }}"
+    broken_ceiling: consul_version_desired is version('consul_version_ceiling[ansible_facts.machine]', '<=') | bool
 
 - name: Check version ceiling broken
   ansible.builtin.debug:
