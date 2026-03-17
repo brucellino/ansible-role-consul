@@ -29,7 +29,7 @@ tls {
     verify_outgoing = [[ verify_outgoing | bool | lower ]]
   }
   grpc {
-    use_auto_cert = true
+    use_auto_cert = false
   }
 }
 disable_remote_exec = false
@@ -73,11 +73,11 @@ ui_config {
   enabled = true
 }
 auto_encrypt {
-  allow_tls = true
+  allow_tls = false
 }
 {% else %}
 auto_encrypt {
-  tls = true
+  tls = false
 }
 
 {% endif %}
