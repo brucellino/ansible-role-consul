@@ -4,14 +4,21 @@
     name: "{{ prerequisites[ansible_facts.distribution_release] }}"
     state: present
 
-- name: Check version ceiling
+- name: If the version ceiling is defined, use it; otherwise, use the declared version
   ansible.builtin.debug:
     msg: >-
-      "{{ consul_version is
-      version_compare(
-      consul_version_ceiling[ansible_facts.machine] | default(consul_version),
-      '<='
-      ) }}"
+      "{{ consul_version_ceiling[ansible_facts.machine] is defined | ternary(consul_version, consul_version_ceiling[ansible_facts.machine]) }}"
+
+- name: Set desired version to ceiling if defined, else declared version
+  ansible.builtin.set_fact:
+    consul_version_desired: >-
+      "{{ consul_version_ceiling[ansible_facts.machine] is defined | ternary(consul_version, consul_version_ceiling[ansible_facts.machine]) }}"
+
+
+- name: Check if the ceiling is broken by comparing the ceiling to the declared version
+  ansible.builtin.debug:
+    msg: >-
+      "{{ consul_version_desired is version_compare(consul_version_ceiling[ansible_facts.machine], '<=') }}"
 
 - name: Check if the declared version is greater than the version ceiling for this arch
   ansible.builtin.set_fact:
