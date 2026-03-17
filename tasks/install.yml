@@ -11,8 +11,7 @@
 
 - name: Set desired version to ceiling if defined, else declared version
   ansible.builtin.set_fact:
-    consul_version_desired: >-
-      "{{ consul_version_ceiling[ansible_facts.machine] is defined | ternary(consul_version, consul_version_ceiling[ansible_facts.machine]) }}"
+    consul_version_desired: consul_version_ceiling[ansible_facts.machine] is defined | ternary(consul_version, consul_version_ceiling[ansible_facts.machine])
 
 
 - name: Check desired version
