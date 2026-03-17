@@ -37,11 +37,11 @@
     - name: Set Consul URL
       ansible.builtin.set_fact:
         consul_zip_url: >-
-          "{{ hashicorp_releases_url }}/
+          {{ hashicorp_releases_url }}/
           consul/
           {{ consul_version_desired }}/
           consul_{{ consul_version_desired }}_linux_
-          {{ arch[ansible_facts.architecture] }}.zip"
+          {{ arch[ansible_facts.architecture] }}.zip
     - name: Debug consul_zip_url
       ansible.builtin.debug:
         var: consul_zip_url | replace(' ', '')
