@@ -1,12 +1,12 @@
 ---
 - name: Install | Add prerequisites
   ansible.builtin.package:
-    name: "{{ prerequisites[ansible_distribution_release] }}"
+    name: "{{ prerequisites[distribution_release] }}"
     state: present
 
 - name: Check if the declared version is greater than the version ceiling for this arch
   ansible.builtin.set_fact:
-    broken_ceiling: "{{ consul_version is version_compare(consul_version_ceiling[ansible_facts.machine] | default(consul_version)) | bool }}"
+    broken_ceiling: "{{ consul_version is version_compare(consul_version_ceiling[ansible_facts.machine] | default(consul_version) ) | bool }}"
 
 - name: Check version ceiling broken
   ansible.builtin.debug:
