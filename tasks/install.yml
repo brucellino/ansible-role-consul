@@ -6,11 +6,14 @@
 
 - name: Set desired version to ceiling if defined, else declared version
   ansible.builtin.set_fact:
-    consul_version_desired: >
-      "{{
+    consul_version_desired: >-
+      {{
       consul_version_ceiling[ansible_facts.machine] is defined |
       ternary(consul_version, consul_version_ceiling[ansible_facts.machine])
-      }}"
+      }}
+- name: Debug consul_version_desired
+  ansible.builtin.debug:
+    var: consul_version_desired
 
 - name: Install | Ensure Consul is executable
   block:
@@ -21,9 +24,9 @@
     - name: Test assertion
       ansible.builtin.assert:
         that:
-          - "consul_version_desired in consul_version_test.stdout"
+          - consul_version_desired in consul_version_test.stdout
         success_msg: "Consul version {{ consul_version_desired }} is ready"
-        fail_msg: "Consul was not successfully installed"
+        fail_msg: "Consul version {{ consul_version_desired }} was not successfully installed"
   rescue:
     # Ensure the correct version is present, removing the existing one
     - name: Install | Ensure old consul is gone
@@ -38,7 +41,7 @@
           consul/
           {{ consul_version_desired }}/
           consul_{{ consul_version_desired }}_linux_
-          {{ arch[ansible_facts.architecture] }}.zip"
+          {{ arch[ansible_facts.architecture] }}.zip | replace(' ', '')"
 
     - name: Install | Unpack Consul
       become: true
