@@ -15,6 +15,11 @@
       "{{ consul_version_ceiling[ansible_facts.machine] is defined | ternary(consul_version, consul_version_ceiling[ansible_facts.machine]) }}"
 
 
+- name: Check desired version
+  ansible.builtin.debug:
+    msg: >-
+      "{{ consul_version_desired }}"
+
 - name: Check if the ceiling is broken by comparing the ceiling to the declared version
   ansible.builtin.debug:
     msg: >-
