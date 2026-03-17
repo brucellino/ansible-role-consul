@@ -44,7 +44,7 @@
           {{ arch[ansible_facts.architecture] }}.zip"
     - name: Debug consul_zip_url
       ansible.builtin.debug:
-        var: consul_zip_url
+        var: consul_zip_url | replace(' ', '')
 
     - name: Install | Unpack Consul
       become: true
