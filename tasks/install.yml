@@ -19,6 +19,12 @@
   ansible.builtin.debug:
     msg: consul_version_desired
 
+
+- name: Check if the ceiling is broken by comparing the ceiling to the declared version
+  ansible.builtin.debug:
+    msg: >-
+      "{{ '1.21.1' is version('1.7.1', '<=') }}"
+
 - name: Check if the ceiling is broken by comparing the ceiling to the declared version
   ansible.builtin.debug:
     msg: >-
