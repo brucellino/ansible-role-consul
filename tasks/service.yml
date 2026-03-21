@@ -37,14 +37,6 @@
   when: consul_port <= 1024
 
 
-# - name: Force all notified handlers to run
-#   meta: flush_handlers
-
-# - name: reload units
-#   become: true
-#   systemd:
-#     daemon_reload: true
-
 - name: Service | Ensure consul is enabled
   become: true
   ansible.builtin.systemd:

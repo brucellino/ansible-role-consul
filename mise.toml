@@ -11,4 +11,4 @@ prek = "latest"
 vault = "1.21.4"
 
 [tasks]
-install_deps = "uv pip install ansible-core detect-secrets"
+install_deps = "uv pip install ansible-core ansible-lint detect-secrets"
