@@ -10,7 +10,7 @@ packer {
     }
     arm = {
       source  = "github.com/cdecoux/builder-arm"
-      version = "1.0.0"
+      version = "v1.0.0"
     }
   }
   required_version = ">=1.7.0, <2.0.0"
