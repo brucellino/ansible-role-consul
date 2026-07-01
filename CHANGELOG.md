@@ -1,3 +1,17 @@
+# [2.2.0](https://github.com/brucellino/ansible-role-consul/compare/v2.1.0...v2.2.0) (2026-07-01)
+
+
+### Bug Fixes
+
+* check if version ceiling is broken for target arch ([ee439dd](https://github.com/brucellino/ansible-role-consul/commit/ee439dd781ee895d929021a9ee4863320fe78641))
+* set defaults for version ceilings for all architectures ([3a0db40](https://github.com/brucellino/ansible-role-consul/commit/3a0db40c80282b82ca9607c8b9e6e401e9e61e7d))
+* **tasks:** add missing comparison on broken version ceiling comparison ([e8a111a](https://github.com/brucellino/ansible-role-consul/commit/e8a111add9e3d7aac17703563c98bbb58cd44eb3))
+
+
+### Features
+
+* **docker:** enabled dns resolution by Consul in containers ([ed4b881](https://github.com/brucellino/ansible-role-consul/commit/ed4b88104582aa3fc3c7826f58380e091aa33c64))
+
 # [2.1.0](https://github.com/brucellino/ansible-role-consul/compare/v2.0.0...v2.1.0) (2023-12-27)
 
 
