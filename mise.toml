@@ -6,7 +6,7 @@ consul = "1.22.5"
 python = "3.13"
 uv = "latest"
 node = "24"
-packer = "1.15.0"
+packer = "1.16.1"
 prek = "latest"
 vault = "1.21.4"
 
