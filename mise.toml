@@ -3,7 +3,7 @@ _.python.venv = { path = ".venv", create = true }
 
 [tools]
 consul = "1.22.5"
-python = "3.13"
+python = "3.14.8"
 uv = "latest"
 node = "24"
 packer = "1.15.0"
