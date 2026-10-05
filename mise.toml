@@ -8,7 +8,7 @@ uv = "latest"
 node = "24"
 packer = "1.15.0"
 prek = "latest"
-vault = "1.21.4"
+vault = "2.1.1"
 
 [tasks]
 install_deps = "uv pip install ansible-core ansible-lint detect-secrets"
