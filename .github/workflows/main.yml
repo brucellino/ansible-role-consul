@@ -92,7 +92,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Mise en Place
-        uses: jdx/mise-action@v2
+        uses: jdx/mise-action@v5
         with:
           install: true
           experimental: true
@@ -179,7 +179,7 @@ jobs:
         VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
     steps:
       - name: Mise en Place
-        uses: jdx/mise-action@v2
+        uses: jdx/mise-action@v5
         with:
           install: true
           experimental: true
@@ -231,7 +231,7 @@ jobs:
         VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
     steps:
       - name: Mise en Place
-        uses: jdx/mise-action@v2
+        uses: jdx/mise-action@v5
         with:
           install: true
           experimental: true
@@ -277,7 +277,7 @@ jobs:
         with:
           name: raspi-os-64
       - name: Mise en Place
-        uses: jdx/mise-action@v2
+        uses: jdx/mise-action@v5
         with:
           install: true
           experimental: true
