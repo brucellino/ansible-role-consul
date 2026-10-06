@@ -2,7 +2,7 @@
 _.python.venv = { path = ".venv", create = true }
 
 [tools]
-consul = "1.22.5"
+consul = "1.22.7"
 python = "3.14.8"
 uv = "latest"
 node = "24"
