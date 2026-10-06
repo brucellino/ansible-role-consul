@@ -19,14 +19,14 @@ jobs:
     defaults:
       run:
         working-directory: .github/build/
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Mise en Place
-        uses: jdx/mise-action@v2
+        uses: jdx/mise-action@v5
         with:
           install: true
           experimental: true

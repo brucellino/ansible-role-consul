@@ -1,3 +1,10 @@
+## [2.2.1](https://github.com/brucellino/ansible-role-consul/compare/v2.2.0...v2.2.1) (2026-07-01)
+
+
+### Bug Fixes
+
+* **defaults:** add OS dependencies for noble and resolute ([b3c67ef](https://github.com/brucellino/ansible-role-consul/commit/b3c67ef9d11dc1920f0fa1dd633c27aaa8b7a6e3))
+
 # [2.2.0](https://github.com/brucellino/ansible-role-consul/compare/v2.1.0...v2.2.0) (2026-07-01)
 
 

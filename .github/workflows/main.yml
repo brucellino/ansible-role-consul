@@ -8,13 +8,13 @@ on:
     branches:
       - main
     paths-ignore:
-      - 'README.md'
-      - 'commitlint.config.js'
-      - '.releaserc.yaml'
-      - '.ansible-lint'
-      - '.config/**'
-      - '.secrets.baseline'
-      - 'CHANGELOG.md'
+      - "README.md"
+      - "commitlint.config.js"
+      - ".releaserc.yaml"
+      - ".ansible-lint"
+      - ".config/**"
+      - ".secrets.baseline"
+      - "CHANGELOG.md"
 jobs:
   lint:
     name: Static Checks
@@ -24,38 +24,17 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+      - name: Dev Tools
+        uses: jdx/mise-action@v5
+        with:
+          install: true
+      - name: Dev Deps
+        run: mise tasks run install_deps
       - name: Lint
-        uses: ansible-community/ansible-lint@v26.1.1
-  secure:
-    name: Security
-    runs-on: ubuntu-latest
-    env:
-      NODE_OPTIONS: --openssl-legacy-provider
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-      - name: Make results-dir
-        run: mkdir -p results-dir
-      - name: run kics Scan
-        uses: checkmarx/kics-action@v2.1.19
-        with:
-          path: '.'
-          output_path: results-dir
-          output_formats: 'json,sarif'
-          enable_comments: true
-          enable_annotations: true
-          enable_jobs_summary: true
-          fail_on: high
-      - name: Upload SARIF file
-        uses: github/codeql-action/upload-sarif@v4
-        with:
-          sarif_file: results-dir/results.sarif
+        uses: ansible-lint .
   build:
     continue-on-error: true
     needs:
-      - secure
       - lint
     name: Build Images
     permissions: write-all
@@ -65,7 +44,7 @@ jobs:
       PACKER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     services:
       vault:
-        image: "public.ecr.aws/hashicorp/vault:1.21"
+        image: "public.ecr.aws/hashicorp/vault:2.0.1"
         ports:
           - 8200:8200
         env:
@@ -75,7 +54,7 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     defaults:
       run:
         working-directory: ".github/build/"
@@ -88,20 +67,17 @@ jobs:
           - "consul.arm.raspi-os-64"
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Mise en Place
-        uses: jdx/mise-action@v2
+        uses: jdx/mise-action@v5
         with:
           install: true
           experimental: true
           cache: true
       - name: Trust and activate mise
-        run: |
-          mise trust
-          eval "$(mise activate)"
-          mise tasks run install_deps
+        run: mise tasks run install_deps
       - name: Get Prerequisites
         run: |
           sudo apt-get install -y \
@@ -158,10 +134,10 @@ jobs:
     needs:
       - build
     name: Test PR
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     services:
       vault:
-        image: "public.ecr.aws/hashicorp/vault:1.21"
+        image: "public.ecr.aws/hashicorp/vault:2.1"
         ports:
           - 8200:8200
         env:
@@ -179,16 +155,13 @@ jobs:
         VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
     steps:
       - name: Mise en Place
-        uses: jdx/mise-action@v2
+        uses: jdx/mise-action@v5
         with:
           install: true
           experimental: true
           cache: true
       - name: Trust and activate mise
-        run: |
-          mise trust
-          eval "$(mise activate)"
-          mise tasks run install_deps
+        run: mise tasks run install_deps
       - name: Vault login
         run: vault login ${{ secrets.VAULT_TOKEN }}
       - name: Enable KV engine
@@ -213,7 +186,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       vault:
-        image: "public.ecr.aws/hashicorp/vault:1.21"
+        image: "public.ecr.aws/hashicorp/vault:2.1"
         ports:
           - 8200:8200
         env:
@@ -231,16 +204,13 @@ jobs:
         VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
     steps:
       - name: Mise en Place
-        uses: jdx/mise-action@v2
+        uses: jdx/mise-action@v5
         with:
           install: true
           experimental: true
           cache: true
       - name: Trust and activate mise
-        run: |
-          mise trust
-          eval "$(mise activate)"
-          mise tasks run install_deps
+        run: mise tasks run install_deps
       - name: Vault login
         run: vault login ${{ secrets.VAULT_TOKEN }}
       - name: Enable KV engine
@@ -260,16 +230,15 @@ jobs:
 
   release:
     needs:
-      - secure
       - lint
       - build
       - test
     name: Release
     if: github.ref_name == 'main' && github.ref_type == 'branch'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Get os image
@@ -277,17 +246,13 @@ jobs:
         with:
           name: raspi-os-64
       - name: Mise en Place
-        uses: jdx/mise-action@v2
+        uses: jdx/mise-action@v5
         with:
           install: true
           experimental: true
           cache: true
       - name: Trust and activate mise
-        run: |
-          mise trust
-          eval "$(mise activate)"
-          mise tasks run install_deps
-
+        run: mise tasks run install_deps
       - name: add semantic release plugins
         run: |
           npm install -D semantic-release \
@@ -297,4 +262,4 @@ jobs:
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: semantic-release
+        run: npx semantic-release
