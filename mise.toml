@@ -3,11 +3,12 @@ _.python.venv = { path = ".venv", create = true }
 
 [tools]
 consul = "2.0.4"
-python = "3.14"
-uv = "0.12.23"
-packer = "1.16.1"
-prek = "0.5.5"
 vault = "2.1.1"
+packer = "1.16.1"
+uv = "0.12.23"
+python = "3.14.8"
+node = "26"
+prek = "0.5.5"
 
 [tasks]
 install_deps = "uv pip install ansible-core ansible-lint detect-secrets"
