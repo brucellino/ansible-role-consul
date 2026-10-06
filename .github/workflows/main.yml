@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Dev Tools
@@ -44,7 +44,7 @@ jobs:
       PACKER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     services:
       vault:
-        image: "public.ecr.aws/hashicorp/vault:2.0.1"
+        image: "public.ecr.aws/hashicorp/vault:2.1.1"
         ports:
           - 8200:8200
         env:
@@ -137,7 +137,7 @@ jobs:
     runs-on: ubuntu-26.04
     services:
       vault:
-        image: "public.ecr.aws/hashicorp/vault:2.1"
+        image: "public.ecr.aws/hashicorp/vault:2.1.1"
         ports:
           - 8200:8200
         env:
@@ -154,6 +154,10 @@ jobs:
         VAULT_ADDR: http://vault:8200
         VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
     steps:
+      - name: Check out code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
       - name: Mise en Place
         uses: jdx/mise-action@v5
         with:
@@ -186,7 +190,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       vault:
-        image: "public.ecr.aws/hashicorp/vault:2.1"
+        image: "public.ecr.aws/hashicorp/vault:2.1.1"
         ports:
           - 8200:8200
         env:
@@ -203,6 +207,10 @@ jobs:
         VAULT_ADDR: http://vault:8200
         VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
     steps:
+      - name: Check out
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
       - name: Mise en Place
         uses: jdx/mise-action@v5
         with:
