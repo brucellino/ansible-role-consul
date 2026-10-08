@@ -5,7 +5,7 @@ _.python.venv = { path = ".venv", create = true }
 consul = "2.0.4"
 vault = "2.1.1"
 packer = "1.16.1"
-uv = "0.12.23"
+uv = "0.12.24"
 python = "3.14.8"
 node = "26"
 prek = "0.5.5"
