@@ -31,8 +31,6 @@ jobs:
           install: true
           experimental: true
           cache: true
-      - name: Add deps
-        run: mise tasks run install_deps
       - name: Get Prerequisites
         run: |
           sudo apt-get install -y \

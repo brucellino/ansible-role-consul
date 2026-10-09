@@ -18,7 +18,7 @@ on:
 jobs:
   lint:
     name: Static Checks
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -28,8 +28,6 @@ jobs:
         uses: jdx/mise-action@v5
         with:
           install: true
-      - name: Dev Deps
-        run: mise tasks run install_deps
       - name: Lint
         uses: ansible-lint .
   build:
@@ -76,9 +74,8 @@ jobs:
           install: true
           experimental: true
           cache: true
-      - name: Trust and activate mise
-        run: mise tasks run install_deps
       - name: Get Prerequisites
+        # should be mise bootstrap
         run: |
           sudo apt-get install -y \
           binfmt-support \
@@ -137,7 +134,7 @@ jobs:
     runs-on: ubuntu-26.04
     services:
       vault:
-        image: "public.ecr.aws/hashicorp/vault:2.1.1"
+        image: "public.ecr.aws/hashicorp/vault:2.1.2"
         ports:
           - 8200:8200
         env:
@@ -164,8 +161,6 @@ jobs:
           install: true
           experimental: true
           cache: true
-      - name: Trust and activate mise
-        run: mise tasks run install_deps
       - name: Vault login
         run: vault login ${{ secrets.VAULT_TOKEN }}
       - name: Enable KV engine
@@ -190,7 +185,8 @@ jobs:
     runs-on: ubuntu-latest
     services:
       vault:
-        image: "public.ecr.aws/hashicorp/vault:2.1.1"
+        # vault tag should be a global var
+        image: "public.ecr.aws/hashicorp/vault:2.1.2"
         ports:
           - 8200:8200
         env:
@@ -217,8 +213,6 @@ jobs:
           install: true
           experimental: true
           cache: true
-      - name: Trust and activate mise
-        run: mise tasks run install_deps
       - name: Vault login
         run: vault login ${{ secrets.VAULT_TOKEN }}
       - name: Enable KV engine
@@ -253,14 +247,6 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: raspi-os-64
-      - name: Mise en Place
-        uses: jdx/mise-action@v5
-        with:
-          install: true
-          experimental: true
-          cache: true
-      - name: Trust and activate mise
-        run: mise tasks run install_deps
       - name: add semantic release plugins
         run: |
           npm install -D semantic-release \
