@@ -29,7 +29,7 @@ jobs:
         with:
           install: true
       - name: Lint
-        uses: ansible-lint .
+        run: ansible-lint .
   build:
     continue-on-error: true
     needs:
