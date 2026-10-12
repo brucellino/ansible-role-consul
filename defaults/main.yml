@@ -130,7 +130,7 @@ consul_certs_dir: "{{ consul_data_dir }}/agent-certs"
 
 # Vault variables for vault agent
 vault_agent_enabled: true
-vault_addr: 100.110.97.36:8200
+vault_addr: 100.122.119.73:8200
 vault_version: 1.13.2
 vault_zip_url: "{{ hashicorp_releases_url }}/vault/{{ vault_version }}/vault_{{ vault_version }}_linux_{{ arch[ansible_facts.architecture] }}.zip" # noqa yaml
 vault_agent_config_dir: /etc/vault-agent.d
