@@ -1,0 +1,75 @@
+- name: Ensure Vault Agent Directory
+  ansible.builtin.file:
+    path: /etc/vault-agent.d
+    owner: root
+    group: root
+    mode: "0755"
+    state: directory
+
+- name: Add Vault
+  ansible.builtin.apt:
+    name: vault
+    state: present
+
+- name: Ensure Default Vault directory not present
+  ansible.builtin.file:
+    path: /etc/vault.d
+    owner: root
+    group: root
+    mode: "0755"
+    state: absent
+
+- name: Vault Agent | Deliver role id
+  ansible.builtin.copy:
+    dest: "{{ vault_agent_config_dir }}/vault_roleid"
+    content: "{{ lookup('community.hashi_vault.vault_kv2_get','consul',  engine_mount_point='hashiatho.me-v2').data.data['vault_agent_role_id'] }}"
+    backup: true
+    force: true
+    mode: "0644"
+    owner: root
+    group: root
+
+- name: Vault Agent | Template Vault Agent template
+  ansible.builtin.template:
+    src: etc/vault-agent.hcl.j2
+    dest: "{{ vault_agent_config_dir }}/vault-agent.hcl"
+    backup: true
+    mode: "0644"
+    owner: root
+    group: root
+# - name: Vault Agent | Deliver agent templates
+#   ansible.builtin.template:
+#     dest: "{{ vault_agent_config_dir }}/{{ item.template }}.tmpl"
+#     src: "etc/vault.d/{{ item.template }}.tmpl.j2"
+#     backup: true
+#     mode: "0644"
+#     owner: root
+#     group: root
+#     variable_start_string: "[["
+#     variable_end_string: "]]"
+#   loop: "{{ vault_agent_templates }}"
+
+- name: Vault Agent | Systemd Unit
+  when: not contained.stat.exists
+  block:
+    - name: Template Vault Agent systemd unit
+      ansible.builtin.template:
+        src: etc/systemd/system/vault-agent.service.j2
+        dest: /etc/systemd/system/vault-agent.service
+        backup: true
+        mode: "0644"
+        owner: root
+        group: root
+        # validate: systemd-analyze verify %s
+      notify: Vault Agent Service
+
+    - name: Enable Vault Agent service
+      ansible.builtin.systemd:
+        name: vault-agent
+        state: restarted
+        enabled: true
+        masked: false
+        daemon_reload: true
+        daemon_reexec: true
+        scope: system
+        no_block: true

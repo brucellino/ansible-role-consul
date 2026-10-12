@@ -4,7 +4,6 @@
 {{- .Data.issuing_ca | writeToFile "[[ consul_data_dir ]]/agent-certs/consul-agent-ca.pem" "consul" "consul" "0644" -}}
 {{ end }}
 #node_name = "[[ ansible_hostname ]]"
-#node_id = "{{ sprig_uuidv4 }}"
 auto_reload_config = true
 datacenter = "[[ data_centre ]]"
 data_dir = "[[ consul_data_dir ]]"
@@ -32,7 +31,7 @@ tls {
     use_auto_cert = false
   }
 }
-disable_remote_exec = false
+disable_remote_exec = true
 ports {
   dns = [[ dns_port ]]
   http = 8500
@@ -57,7 +56,8 @@ acl = {
   default_policy = "allow"
   enable_token_persistence = true
   tokens {
-    initial_management = {{ with secret "hashiatho.me-v2/consul" }}"{{ .Data.http_token }}"{{ end }}
+    initial_management = {{ with secret "hashiatho.me-v2/consul" }}"{{ .Data.data.http_token }}"{{ end }}
+    default = {{ with secret "hashiatho.me-v2/consul" }}"{{ .Data.data.http_token }}"{{ end }}
   }
 }
 

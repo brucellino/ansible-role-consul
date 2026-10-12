@@ -1,5 +1,48 @@
 ---
 # roles/consul/service.yml
+- name: Add consul
+  ansible.builtin.apt:
+    name: consul
+    state: present
+
+- name: Install | Ensure agent certificate directory
+  become: true
+  ansible.builtin.file:
+    path: "{{ consul_certs_dir }}"
+    state: directory
+    owner: consul
+    group: consul
+    mode: "0777"
+
+- name: Install | Ensure Logging directory
+  become: true
+  ansible.builtin.file:
+    path: "{{ consul_log_dir }}"
+    state: directory
+    mode: "0777"
+    owner: consul
+    group: consul
+
+- name: Add Consul template to Vault-Agent
+  ansible.builtin.copy:
+    src: etc/vault-agent.d/consul-agent.hcl
+    dest: /etc/vault-agent.d/consul-agent.hcl
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Deliver Vault Agent templates
+  ansible.builtin.template:
+    src: etc/vault.d/consul-agent.hcl.tmpl.j2
+    dest: /etc/vault-agent.d/consul-agent.hcl.tmpl
+    variable_start_string: "[["
+    variable_end_string: "]]"
+    owner: root
+    group: root
+    mode: "0644"
+
+  notify: Vault Agent Service
+
 # Tasks that configure the systemd unit and start the service
 - name: Service | Ensure that systemd dir is present
   become: true
@@ -20,22 +63,7 @@
     mode: "0644"
     variable_start_string: "[["
     variable_end_string: "]]"
-  notify: Reload consul
-
-- name: Service | Add Custom DNS template
-  become: true
-  ansible.builtin.template:
-    src: etc/resolv.conf.j2
-    dest: /etc/resolv.conf
-    follow: true
-    backup: true
-    mode: "0644"
-    owner: root
-    group: root
-    unsafe_writes: false
-    force: true
-  when: consul_port <= 1024
-
+  notify: Consul Agent Service
 
 - name: Service | Ensure consul is enabled
   become: true
@@ -45,9 +73,3 @@
     enabled: true
     masked: false
     daemon_reload: true
-
-- name: Service | Start Consul service
-  become: true
-  ansible.builtin.service:
-    name: consul
-    state: restarted

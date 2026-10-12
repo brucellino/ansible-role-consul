@@ -1,8 +1,5 @@
 pid_file = "./pidfile"
-
-{% if vault_agent_auto_auth_enabled | default('false') | bool %}
 auto_auth {
-  {% if vault_agent_auto_auth_method == 'approle' %}
   method {
     type = "approle"
     mount_path = "auth/{{ vault_approle_mount_path }}"
@@ -13,7 +10,7 @@ auto_auth {
       role = "{{ vault_agent_role }}"
     }
   }
-  {% endif %}
+
 
   sink "file" {
     config = {
@@ -22,17 +19,11 @@ auto_auth {
   }
 }
 
-{% endif %}
-
 vault {
   address = "http://{{ vault_addr }}"
 }
 
-# Template consul configuration and CA cert
-template {
-  source      = "/etc/vault-agent.d/consul-agent.hcl.tmpl"
-  destination = "/etc/consul.d/consul.hcl"
-}
+
 cache {
   use_auto_auth_token = true
 }

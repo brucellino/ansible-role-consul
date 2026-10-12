@@ -11,13 +11,7 @@ User=consul
 Group=consul
 Environment=VAULT_ADDR=http://active.vault.service.consul:8200
 Environment=VAULT_SKIP_VERIFY=true
-{% if vault_agent_enabled %}
-# ExecStartPre=/usr/bin/vault agent -config /etc/vault/vault-agent.hcl
-{% endif %}
-ExecStart=/bin/consul agent \
-  -dns-port [[ consul_port ]] \
-  -config-dir=/etc/consul.d/
-
+ExecStart=/bin/consul agent -config-dir=/etc/consul.d/
 ExecReload=/bin/kill --signal HUP $MAINPID
 KillMode=process
 KillSignal=SIGTERM
