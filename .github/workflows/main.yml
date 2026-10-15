@@ -42,7 +42,7 @@ jobs:
       PACKER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     services:
       vault:
-        image: "public.ecr.aws/hashicorp/vault:2.1.2"
+        image: "public.ecr.aws/hashicorp/vault:2.2.0"
         ports:
           - 8200:8200
         env:
@@ -134,7 +134,7 @@ jobs:
     runs-on: ubuntu-26.04
     services:
       vault:
-        image: "public.ecr.aws/hashicorp/vault:2.1.2"
+        image: "public.ecr.aws/hashicorp/vault:2.2.0"
         ports:
           - 8200:8200
         env:
@@ -186,7 +186,7 @@ jobs:
     services:
       vault:
         # vault tag should be a global var
-        image: "public.ecr.aws/hashicorp/vault:2.1.2"
+        image: "public.ecr.aws/hashicorp/vault:2.2.0"
         ports:
           - 8200:8200
         env:
