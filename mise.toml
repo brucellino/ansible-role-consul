@@ -1,7 +1,7 @@
 [env]
 
 [tools]
-consul = "2.0.4"
+consul = "2.1.0"
 vault = "2.1.2"
 packer = "1.16.1"
 "pipx:ansible" = "14.5.0"
