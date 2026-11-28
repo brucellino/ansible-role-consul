@@ -3,7 +3,7 @@
 [tools]
 consul = "2.1.0"
 vault = "2.2.2"
-packer = "1.16.2"
+packer = "1.16.3"
 "pipx:ansible" = "15.0.0"
 "pipx:ansible-core" = "2.22.0"
 "pipx:ansible-lint" = "26.11.0"
